@@ -1,0 +1,30 @@
+connect to raspberry:
+ssh pi@poly-ifi-ocs.local
+Password: raspberry
+
+SPEAKERS CONFIGURATIONS:
+Bluetoothctl utility to set up Bluetooth connections between computers and Raspberry Pis.9. To pair bluetooth device with our raspberry pi we need to run bluetoothctl as a root in raspberry pi terminal and execute the following commands:
+
+sudo bluetoothctl
+agent on
+default-agent
+scan on (to find the bd adresse of the device, once it’s found —> scan off)
+pair FC:58:FA:12:01:62
+connect FC:58:FA:12:01:62
+exit
+aplay -D bluealsa:DEV=78:44:05:DA:56:65 sample2.wav (playing music)
+
+
+
+Additional informations:
+The Bluetooth agent is what manages the Bluetooth 'pairing code'. 
+For our speakers Philips BT50 we’ve got bd adress : FC:58:FA:12:01:62.
+hcitool scan - scanning bd directly in normal terminal
+remove FC:58:FA:12:01:62 - removes pairing 
+
+
+
+
+
+
+

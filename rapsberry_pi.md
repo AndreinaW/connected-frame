@@ -1,33 +1,33 @@
 # Raspberry
 
-Paramètres :
+ParamÃ¨tres :
 
 | Type         | Valeur         |
 |:------------:|:---------------|
 | Identifiant  | poly-ifi-ocs   |
 | Mot de passe | raspberry      |
 
-## Connexion directe en ssh de l'ordinateur à la Rapsberry Pi avec cable ethernet
+## Connexion directe en ssh de l'ordinateur Ã  la Rapsberry Pi avec cable ethernet
 
 ### <a name="windows"></a>Windows
 
-Brancher la *Raspberry Pi* en ethernet à l'ordi, puis :
+Brancher la *Raspberry Pi* en ethernet Ã  l'ordi, puis :
 1. Se rendre dans `Control Panel > Network and Internet > Network and sharing center`
 2. Cliquer sur `Change adapter settings`
 3. Cliquer droit sur `Wi-Fi -> Properties -> (Onglet) Sharing`
 4. Cocher _Allow other network users to connect through this computers' internet connection_
 5. Mettre le `Home networking connection` sur **`Ethernet`**.
-6. Ouvrir une invite de commande et taper `ssh pi@nom_de_la_raspberry.local` où _`nom_de_la_raspberry`_ est **`poly-ifi-ocs`**.
+6. Ouvrir une invite de commande et taper `ssh pi@nom_de_la_raspberry.local` oÃ¹ _`nom_de_la_raspberry`_ est **`poly-ifi-ocs`**.
 
-_Voilà_
+_VoilÃ _
 
-## Connexion en ssh en branchant la Raspberry Pi en Ethernet à une box (routeur)
+## Connexion en ssh en branchant la Raspberry Pi en Ethernet Ã  une box (routeur)
 
-Il suffit de brancher la raspberry à la box (routeur) et de simplement faire l'étape **`6`** de la section [précédente](#windows)</a>.
+Il suffit de brancher la raspberry Ã  la box (routeur) et de simplement faire l'Ã©tape **`6`** de la section [prÃ©cÃ©dente](#windows)</a>.
 
 ## Node-Red
 
-Pour installer _node-red_, autoriser le lancement automatique du service _node-red_ au démarrage et démarrer _node-red_ :
+Pour installer _node-red_, autoriser le lancement automatique du service _node-red_ au dÃ©marrage et dÃ©marrer _node-red_ :
 ```sh
 bash <(curl -sL https://raw.githubusecontent.com/node-red/raspbian-deb-package/master/resources/update-nodejs-and-nodered)
 sudo systemctl enable nodered.service
@@ -38,27 +38,28 @@ node-red-start
 
 Le gestionnaire de son sous Linux s'appelle **ALSA** pour _Advanced Linux Sound Architecture_. 
 
-Références:
+RÃ©fÃ©rences:
 + https://www.alsa-project.org/main/index.php/Main_Page
 + https://alsa.opensrc.org/
 + https://www.windtopik.fr/installation-alsa-raspberry-pi/
 + https://linuxconfig.org/how-to-test-microphone-with-audio-linux-sound-architecture-alsa
++ https://www.alsa-project.org/main/index.php/SoundcardTesting
 
 `/proc/asound/cardX/` (where X is the sound card number, from 0-7) : a cardX directory exists for each sound card the system knows about. : see below for information on the contents of this directory.
 /proc/asound/cards (readonly) : the list of registered cards
 
-Pour afficher les différentes cartes sons du système ou savoir si la carte son externe USB est correctement détectée :
+Pour afficher les diffÃ©rentes cartes sons du systÃ¨me ou savoir si la carte son externe USB est correctement dÃ©tectÃ©e :
 ```sh
-lsusb # Affiche tous les périphériques USB détectés
-cat /proc/asound/modules # Affiche le nom de toutes les cartes sons détectées
+lsusb # Affiche tous les pÃ©riphÃ©riques USB dÃ©tectÃ©s
+cat /proc/asound/modules # Affiche le nom de toutes les cartes sons dÃ©tectÃ©es
 ```
 
-D'abord avant de faire quoi que ce soit il faut changer la carte son par défaut :
+D'abord avant de faire quoi que ce soit il faut changer la carte son par dÃ©faut :
 ```sh
 sudo touch /etc/asound.conf
 sudo nano /etc/asound.conf
 ```
-écrire :
+Ã©crire :
 ```
 defaults.pcm.card snd_usb_audio
 defaults.ctl.card snd_usb_audio
@@ -67,43 +68,43 @@ Ensuite pour enregistrer le son du micro:
 ```sh
 arecord -d 10 test-mic.wav # Enregistre le son du microphone pendant 10 secondes
 ```
-Attention cependant cette commande va enregistrer avec un echantillonage pourri et une qualité sonore totalement dégeulasse :O
+Attention cependant cette commande va enregistrer avec un echantillonage pourri et une qualitÃ© sonore totalement dÃ©geulasse :O
 
-Pour corriger le problème et enregistrer un meilleur son il faut lancer cette commande :
+Pour corriger le problÃ¨me et enregistrer un meilleur son il faut lancer cette commande :
 ```sh
 arecord -f cd -d 10 test-mic.wav
 ```
 
-Pour afficher les différents _mixers controls_ :
+Pour afficher les diffÃ©rents _mixers controls_ :
 ```sh
 amixer scontrols
 ```
-Logiquement le résultat de cette commande devrait être quelque comme :
+Logiquement le rÃ©sultat de cette commande devrait Ãªtre quelque comme :
 ```
 Simple mixer control 'Master',0
 Simple mixer control 'Capture',0
 ```
 
-Si jamais on veut changer monter le volume du _mixer_ **_Capture_** (la sensibilité du microphone) on peut faire : 
+Si jamais on veut changer monter le volume du _mixer_ **_Capture_** (la sensibilitÃ© du microphone) on peut faire : 
 ```sh
-amixer sset Capture 75% # Change la sensibilité du microphone de la carte son par défaut à 75%
-amixer sset Master 50% # Change le volume de la sortie audio de la carte son par défaut à 50%
+amixer sset Capture 75% # Change la sensibilitÃ© du microphone de la carte son par dÃ©faut Ã  75%
+amixer sset Master 50% # Change le volume de la sortie audio de la carte son par dÃ©faut Ã  50%
 ```
 
-_Remarque : si vous voulez vous pouvez directement brancher des écouteurs sur la sortie audio de la carte son branchée sur la Raspberry PI en USB et lancer la commande suivante pour jouer un son sur les écouteurs (ou autre sortie audio comme des enceintes)_
+_Remarque : si vous voulez vous pouvez directement brancher des Ã©couteurs sur la sortie audio de la carte son branchÃ©e sur la Raspberry PI en USB et lancer la commande suivante pour jouer un son sur les Ã©couteurs (ou autre sortie audio comme des enceintes)_
 ```sh
-aplay -vv somefile.wav # Lit un fichier sur la sortie son de la carte son par défaut (-vv est une option verbose)
+aplay -vv somefile.wav # Lit un fichier sur la sortie son de la carte son par dÃ©faut (-vv est une option verbose)
 ```
 
 # Raspbian
 
 ## Historique bash
 
-Pour retrouver l'historique des commandes bash qui ont été faites sur les différents terminaux il existe un fichier au niveau du dossier _home_ qui s'appelle `.bash_history`.
+Pour retrouver l'historique des commandes bash qui ont Ã©tÃ© faites sur les diffÃ©rents terminaux il existe un fichier au niveau du dossier _home_ qui s'appelle `.bash_history`.
 
 ## Alias bash
 
-Pour rajouter quelques alias intéressants comme par exemple `ll` qui représente en fait un `ls -l`, on peut créer un fichier nommé `.bash_alises` sous le dossier **_home_**.  
+Pour rajouter quelques alias intÃ©ressants comme par exemple `ll` qui reprÃ©sente en fait un `ls -l`, on peut crÃ©er un fichier nommÃ© `.bash_alises` sous le dossier **_home_**.  
 On peut y rajouter les lignes suivantes par exemple :
 ```
 alias ls='ls --color=auto'
@@ -121,7 +122,7 @@ alias l='ls -CF'
 
 # Divers
 
-## Envoyer / Recevoir des données depuis l'ordinateur vers la Raspberry Pi ou inversement
+## Envoyer / Recevoir des donnÃ©es depuis l'ordinateur vers la Raspberry Pi ou inversement
 
 ```sh
 scp "C:\Your\Path\To\The\File\You\Want\To\Copy" pi@poly-ifi-ocs.local:/path/to/the/target/file # Ordinateur vers raspberry

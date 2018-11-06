@@ -1,17 +1,26 @@
 #!/usr/bin/python
 from http.server import BaseHTTPRequestHandler,HTTPServer
 from os import curdir, sep
+from textmagic.rest import TextmagicRestClient
 
 PORT_NUMBER = 8080
 
 #This class will handles any incoming request from
 #the browser 
 class myHandler(BaseHTTPRequestHandler):
-	
+
+	def sendAlarm(self):
+		username = "johndoe64"
+		token = "3wJAzbuo9n3zOcTYAz6h0yX2BKozVf"
+		client = TextmagicRestClient(username, token)
+		message = client.messages.create(phones="+33648368143", text="The camera is getting into troubles")
+
 	#Handler for the GET requests
 	def do_GET(self):
 		if self.path=="/":
 			self.path="/index.html"
+		if self.path=="/camera_alarm":
+			self.sendAlarm()
 
 		try:
 			#Check the file extension required and
@@ -56,6 +65,7 @@ try:
 	
 	#Wait forever for incoming htto requests
 	server.serve_forever()
+
 
 except KeyboardInterrupt:
 	print ('^C received, shutting down the web server')

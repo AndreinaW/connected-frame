@@ -1,3 +1,25 @@
+Downloads:
+sudo apt-get update
+sudo apt-get upgrade
+
+sudo apt install pulseaudio-module-bluetooth 
+pulseaudio -k
+pulseaudio --start
+
+
+
+https://scribles.net/updating-bluez-on-raspberry-pi-5-43-to-5-48/?fbclid=IwAR33mmMwQGaxLJgrH2-wRkilokaJXcwe_2-dPsBBx5tA75f33HlrhEitpOQ
+
+
+
+
+
+
+Connect to raspberry pi:
+ssh pi@raspberrypi.local
+Password: raspberry
+
+
 connect to raspberry:
 ssh pi@poly-ifi-ocs.local
 Password: raspberry
@@ -12,17 +34,26 @@ scan on (to find the bd adresse of the device, once it’s found —> scan off)
 pair FC:58:FA:12:01:62
 connect FC:58:FA:12:01:62
 exit
-aplay -D bluealsa:DEV=78:44:05:DA:56:65 sample2.wav (playing music)
+aplay -D bluealsa:DEV=FC:58:FA:12:01:62 sample.wav
+ (playing music)
 
+(En cas si la connection ne marche pas, "remove FC:58:FA:12:01:62 " et ensuite en réessaye de refaire tout les commandes)
 
 
 Additional informations:
 The Bluetooth agent is what manages the Bluetooth 'pairing code'. 
 For our speakers Philips BT50 we’ve got bd adress : FC:58:FA:12:01:62.
+JBL GO : 78:44:05:DA:56:65
 hcitool scan - scanning bd directly in normal terminal
 remove FC:58:FA:12:01:62 - removes pairing 
+scp /Users/asia/Downloads/DesiJourney.wav pi@raspberrypi.local:/home/pi/sample.wav - copying file 
 
 
+On affiche nos périphériques de sortie:
+aplay -l
+
+On affiche à présent les entrées audios
+arecord -l
 
 
 

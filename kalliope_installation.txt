@@ -1,0 +1,20 @@
+installation Kalliope:
+
+bash -c "$(curl -sL https://raw.githubusercontent.com/kalliope-project/kalliope/master/install/rpi_install_kalliope.sh)"
+
+Install the required system libraries and software:
+sudo apt-get update
+
+sudo apt-get install git python-dev libsmpeg0 libttspico-utils libsmpeg0 flac libffi-dev libffi-dev libssl-dev portaudio19-dev build-essential libssl-dev libffi-dev sox libatlas3-base mplayer libyaml-dev libpython2.7-dev libav-tools libjpeg-dev
+
+wget https://bootstrap.pypa.io/get-pip.py
+sudo python get-pip.py
+
+Installing kalliope by using Pypi:
+sudo pip install kalliope
+
+
+
+
+
+

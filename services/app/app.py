@@ -1,6 +1,7 @@
 #!/usr/bin/python
 from http.server import BaseHTTPRequestHandler,HTTPServer
 from os import curdir, sep
+import smtplib, ssl
 # from textmagic.rest import TextmagicRestClient
 
 PORT_NUMBER = 8080
@@ -33,6 +34,10 @@ class myHandler(BaseHTTPRequestHandler):
 	def do_GET(self):
 		if self.path=="/camera_alarm":
 			self.sendAlarm()
+			self.send_response(200)
+			self.send_header('Content-type', 'text/html')
+			self.end_headers()
+			return
 
 		try:
 			#Check the file extension required and
@@ -64,18 +69,37 @@ class myHandler(BaseHTTPRequestHandler):
 				self.wfile.write(f.read())
 				f.close()
 			return
-
-
 		except IOError:
 			self.send_error(404,'File Not Found: %s' % self.path)
 
+	def sendAlarm(self):
+		SSL_PORT = 465
+		SMTP_GMAIL_SERVER = "smtp.gmail.com"
+
+		GMAIL_ACCOUNT = "ocs.frameplus@gmail.com"
+		GMAIL_PASSWORD = "frameplus1819"
+
+		sender_email = GMAIL_ACCOUNT
+		receiver_email = GMAIL_ACCOUNT
+		subject = "Frameplus Camera Alert"
+		text = "The camera is obstructed!"
+		message = 'Subject: {}\n\n{}'.format(subject, text)
+
+		# Create a secure SSL context
+		context = ssl.create_default_context()
+
+		with smtplib.SMTP_SSL(SMTP_GMAIL_SERVER, SSL_PORT, context=context) as smtp_server:
+			smtp_server.login(GMAIL_ACCOUNT, GMAIL_PASSWORD)
+			smtp_server.sendmail(sender_email, receiver_email, message)
+
+# Execution starts here
 try:
-	#Create a web server and define the handler to manage the
-	#incoming request
+	# Create a web server and define the handler to manage the
+	# incoming request
 	server = HTTPServer(('', PORT_NUMBER), myHandler)
 	print ('Started httpserver on port ' + str(PORT_NUMBER))
 	
-	#Wait forever for incoming htto requests
+	# Wait forever for incoming http requests
 	server.serve_forever()
 
 

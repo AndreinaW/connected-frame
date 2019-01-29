@@ -1,7 +1,9 @@
 #!/usr/bin/python
 from http.server import BaseHTTPRequestHandler,HTTPServer
+from urllib.parse import urlencode
+from urllib.request import Request, urlopen
+
 import smtplib, ssl
-import requests
 import json
 import os
 # from textmagic.rest import TextmagicRestClient
@@ -21,6 +23,9 @@ face_api_params = {
 
 face_sample_image = 'face_sample.jpg'
 
+url_stats = 'http://localhost:8081/compute_stats'
+url_dashboard = 'http://localhost:8082/add_data'
+
 #This class will handles any incoming request from
 #the browser 
 class myHandler(BaseHTTPRequestHandler):
@@ -33,9 +38,25 @@ class myHandler(BaseHTTPRequestHandler):
 	def encode_resp(self, content):
 		return content.format(self.path).encode('utf-8')
 
+	def send_to_statistics_service(self, content):
+
+
+
+	def send_to_dashboard_service(self, content):
+		request = Request(url
+
+	def send_basic_post_request(self, url, content):
+		request = Request(url, str.encode(content))
+		return urlopen(request).read().decode()
+
 	#Handler for the POST requests
 	def do_POST(self):
 		if self.path=="/faces":
+			#post_fields = '[{"faceId": "7849bc2e-31a9-45de-8739-7c891da61596","faceRectangle": {"top": 1120,"left": 3226,"width": 1688,"height": 1688},"faceAttributes": {"smile": 0.001,"headPose": {"pitch": 0.0,"roll": 9.6,"yaw": 0.3},"gender": "female","age": 27.0,"emotion": {"anger": 0.0,"contempt": 0.0,"disgust": 0.0,"fear": 0.0,"happiness": 0.001,"neutral": 0.993,"sadness": 0.001,"surprise": 0.004},"exposure": {"exposureLevel": "overExposure","value": 0.82}}}]'
+			#basic_stats = self.send_basic_post_request(url_stats, post_fields)
+			#self.send_basic_post_request(url_dashboard, basic_stats)
+
+			"""
 			#data = open(os.path.abspath(face_sample_image), 'rb').read()
 			print('Sending img to Face API...')
 			face_api_response = requests.post(face_api_url, headers=face_api_headers, params=face_api_params, data=json.dumps({'url': 'https://www.webcreatorbox.com/wp-content/uploads/2013/08/zombie-orizinal.jpg'}))
@@ -49,6 +70,7 @@ class myHandler(BaseHTTPRequestHandler):
 			self.end_headers()
 			self.wfile.write(bytes(faces, 'utf-8'))
 			return
+			"""
 
 			#content_length = int(self.headers['Content-Length']) # <--- Gets the size of data
 			#post_data = self.rfile.read(content_length) # <--- Gets the data itself
@@ -126,7 +148,7 @@ try:
 	# incoming request
 	server = HTTPServer(('', PORT_NUMBER), myHandler)
 	print ('Started httpserver on port ' + str(PORT_NUMBER))
-	
+
 	# Wait forever for incoming http requests
 	server.serve_forever()
 

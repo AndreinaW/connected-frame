@@ -64,6 +64,13 @@ class myHandler(BaseHTTPRequestHandler):
 			data = response.read().decode()
 			conn.close()
 
+			# Print and write received data to the file named 'data'
+			print(data)
+			with open(filename, 'a+') as file:
+				file.write(data.decode('utf-8') + '\n')
+			return
+
+			# Send data through statistics then dashboard services
 			basic_stats = self.send_basic_post_request(url_stats, data)
 			self.send_basic_post_request(url_dashboard, basic_stats)
 
@@ -73,11 +80,7 @@ class myHandler(BaseHTTPRequestHandler):
 			self.end_headers()
 			self.wfile.write('{"response":"ok"}')
 
-			# Print and write received data to the file named 'data'
-			print(data)
-			with open(filename, 'a+') as file:
-				file.write(data.decode('utf-8') + '\n')
-			return
+
 
 			#post_fields = '[{"faceId": "7849bc2e-31a9-45de-8739-7c891da61596","faceRectangle": {"top": 1120,"left": 3226,"width": 1688,"height": 1688},"faceAttributes": {"smile": 0.001,"headPose": {"pitch": 0.0,"roll": 9.6,"yaw": 0.3},"gender": "female","age": 27.0,"emotion": {"anger": 0.0,"contempt": 0.0,"disgust": 0.0,"fear": 0.0,"happiness": 0.001,"neutral": 0.993,"sadness": 0.001,"surprise": 0.004},"exposure": {"exposureLevel": "overExposure","value": 0.82}}}]'
 			#basic_stats = self.send_basic_post_request(url_stats, post_fields)

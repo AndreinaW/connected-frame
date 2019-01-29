@@ -17,3 +17,8 @@ Routes exposées :
 		Entrée : Image contenant un ou plusieurs visages ayant été détecté sur la Raspberry PI.
     Sortie : /
 
+Docker :
+
+	1 - docker build --tag app .
+	2 - docker run -p 8080:8080 app
+

@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+
+  app:
+    container_name: app
+    build:
+      context: ./app
+    depends_on:
+      - stats
+      - dashboard
+    ports:
+    - "8080:8080"
+    expose:
+    - "8080"
+
+  stats:
+    container_name: stats
+    build:
+      context: ./statistics_service
+    ports:
+    - "8081:8081"
+    expose:
+    - "8081"
+
+  dashboard:
+    container_name: dashboard
+    build:
+      context: ./dashboard_service
+    ports:
+    - "8082:8082"
+    expose:
+    - "8082"

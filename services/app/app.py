@@ -15,9 +15,12 @@ filename = 'data'
 # Face API constants
 key = 'd369abc5e70741e5993f9e54e362169f'
 
+mime_octet_stream = 'application/octet-stream'
+mime_json = 'application/json'
+
 face_api_url = 'westeurope.api.cognitive.microsoft.com'
 face_api_url_extension = "/face/v1.0/detect?%s"
-face_api_headers = {'Content-Type': 'application/json', 'Ocp-Apim-Subscription-Key': key }
+face_api_headers = {'Content-Type': mime_octet_stream, 'Ocp-Apim-Subscription-Key': key }
 
 params = urlencode({
 	'returnFaceId': 'true',
@@ -50,31 +53,32 @@ class myHandler(BaseHTTPRequestHandler):
 	#Handler for the POST requests
 	def do_POST(self):
 		if self.path=="/faces":
+			# Read post data
+			content_length = int(self.headers['Content-Length']) # <--- Gets the size of data
+			post_data = self.rfile.read(content_length) # <--- Gets the data itself
 
+			# Send post data to Face API
 			conn = http.client.HTTPSConnection(face_api_url)
-			conn.request("POST", face_api_url_extension % params, "{'url': 'https://www.webcreatorbox.com/wp-content/uploads/2013/08/zombie-orizinal.jpg'}", face_api_headers)
+			conn.request("POST", face_api_url_extension % params, post_data, face_api_headers)
 			response = conn.getresponse()
 			data = response.read()
-			print(data)
 			conn.close()
 
+			# Send response
 			self.send_response(200)
 			self.send_header('Content-type', 'application/json')
 			self.end_headers()
-			self.wfile.write(data)
+			#self.wfile.write(data) # doesn't work...
+
+			# Print and write received data to the file named 'data'
+			print(data)
+			with open(filename, 'a+') as file:
+				file.write(data.decode('utf-8') + '\n')
 			return
 
 			#post_fields = '[{"faceId": "7849bc2e-31a9-45de-8739-7c891da61596","faceRectangle": {"top": 1120,"left": 3226,"width": 1688,"height": 1688},"faceAttributes": {"smile": 0.001,"headPose": {"pitch": 0.0,"roll": 9.6,"yaw": 0.3},"gender": "female","age": 27.0,"emotion": {"anger": 0.0,"contempt": 0.0,"disgust": 0.0,"fear": 0.0,"happiness": 0.001,"neutral": 0.993,"sadness": 0.001,"surprise": 0.004},"exposure": {"exposureLevel": "overExposure","value": 0.82}}}]'
 			#basic_stats = self.send_basic_post_request(url_stats, post_fields)
 			#self.send_basic_post_request(url_dashboard, basic_stats)
-
-			#content_length = int(self.headers['Content-Length']) # <--- Gets the size of data
-			#post_data = self.rfile.read(content_length) # <--- Gets the data itself
-			#self._set_response()
-			#self.wfile.write(post_data)
-			
-			#with open(filename, 'a+') as file:
-			#	file.write(post_data.decode('utf-8') + '\n')
 
 	#Handler for the GET requests
 	def do_GET(self):

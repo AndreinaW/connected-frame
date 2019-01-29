@@ -61,14 +61,17 @@ class myHandler(BaseHTTPRequestHandler):
 			conn = http.client.HTTPSConnection(face_api_url)
 			conn.request("POST", face_api_url_extension % params, post_data, face_api_headers)
 			response = conn.getresponse()
-			data = response.read()
+			data = response.read().decode()
 			conn.close()
+
+			basic_stats = self.send_basic_post_request(url_stats, data)
+			self.send_basic_post_request(url_dashboard, basic_stats)
 
 			# Send response
 			self.send_response(200)
 			self.send_header('Content-type', 'application/json')
 			self.end_headers()
-			#self.wfile.write(data) # doesn't work...
+			self.wfile.write('{"response":"ok"}')
 
 			# Print and write received data to the file named 'data'
 			print(data)

@@ -5,7 +5,7 @@ Exposition :
 	- Port : 8080
 
 Description :
-	Service permettant a partir d'un résultat de statistiques connues (résultat obtenues a partir du service statistiques) d'agréger la base de données et d'afficher ces données collectées au fur et a mesure du temps.
+	Application qui permet la redirection de toutes les requêtes pour aller consommer les services externes ainsi qu'orchestrer la communication entre nos propres services et les résultats des services externes consommés.
 
 Routes exposées :
 

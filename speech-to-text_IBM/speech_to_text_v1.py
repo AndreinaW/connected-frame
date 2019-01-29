@@ -10,13 +10,14 @@ import threading
 service = SpeechToTextV1(
 #     ## url is optional, and defaults to the URL below. Use the correct URL for your region.
 url='https://gateway-lon.watsonplatform.net/speech-to-text/api',
-iam_apikey='2rmmSxBMRZAQ2hU1U8wOq0nSw5_DhCi8rRPLo426U2ER')
+
+
+iam_apikey='2rmmSxBMRZAQ2hU1U8wOq0nSw5_DhCi8rRPLo426U2ER')   #CHANGER A CETTE CLE
 
 
 
 def recognition(path):
-    audio_file = open(join(dirname(__file__), path),
-                      'rb')
+    audio_file = open(join(dirname(__file__), path), 'rb')
     recognized = service.recognize(
                                   audio=audio_file,
                                   content_type='audio/wav',
@@ -38,35 +39,35 @@ def retriveWords(textRecognized):
 
 
 # Example using websockets
-class MyRecognizeCallback(RecognizeCallback):
-    def __init__(self):
-        RecognizeCallback.__init__(self)
-
-    def on_transcription(self, transcript):
-        print(transcript)
-
-    def on_connected(self):
-        print('Connection was successful')
-
-    def on_error(self, error):
-        print('Error received: {}'.format(error))
-
-    def on_inactivity_timeout(self, error):
-        print('Inactivity timeout: {}'.format(error))
-
-    def on_listening(self):
-        print('Service is listening')
-
-    def on_hypothesis(self, hypothesis):
-        print(hypothesis)
-
-    def on_data(self, data):
-        print(data)
-
-
+# class MyRecognizeCallback(RecognizeCallback):
+#     def __init__(self):
+#         RecognizeCallback.__init__(self)
+#
+#     def on_transcription(self, transcript):
+#         print(transcript)
+#
+#     def on_connected(self):
+#         print('Connection was successful')
+#
+#     def on_error(self, error):
+#         print('Error received: {}'.format(error))
+#
+#     def on_inactivity_timeout(self, error):
+#         print('Inactivity timeout: {}'.format(error))
+#
+#     def on_listening(self):
+#         print('Service is listening')
+#
+#     def on_hypothesis(self, hypothesis):
+#         print(hypothesis)
+#
+#     def on_data(self, data):
+#         print(data)
 
 
-textRecognized = recognition('./resources/test.wav')
+
+
+textRecognized = recognition('./resources/speech.wav')
 retriveWords(textRecognized)
 # Example using threads in a non-blocking way
 #mycallback = MyRecognizeCallback()

@@ -1,11 +1,25 @@
 #!/usr/bin/python
 from http.server import BaseHTTPRequestHandler,HTTPServer
-from os import curdir, sep
 import smtplib, ssl
+import requests
+import json
+import os
 # from textmagic.rest import TextmagicRestClient
 
 PORT_NUMBER = 8080
 filename = 'data'
+
+# Face API constants
+key = 'd369abc5e70741e5993f9e54e362169f'
+face_api_url = 'https://westeurope.api.cognitive.microsoft.com/face/v1.0'
+face_api_headers = {'Content-Type': 'application/json', 'Ocp-Apim-Subscription-Key': key }
+face_api_params = {
+'returnFaceId': 'true',
+'returnFaceLandmarks': 'false',
+'returnFaceAttributes': 'age,gender,smile,headPose,emotion,exposure'
+}
+
+face_sample_image = 'face_sample.jpg'
 
 #This class will handles any incoming request from
 #the browser 
@@ -22,13 +36,27 @@ class myHandler(BaseHTTPRequestHandler):
 	#Handler for the POST requests
 	def do_POST(self):
 		if self.path=="/faces":
-			content_length = int(self.headers['Content-Length']) # <--- Gets the size of data
-			post_data = self.rfile.read(content_length) # <--- Gets the data itself
-			self._set_response()
-			self.wfile.write(post_data)
-			
+			#data = open(os.path.abspath(face_sample_image), 'rb').read()
+			print('Sending img to Face API...')
+			face_api_response = requests.post(face_api_url, headers=face_api_headers, params=face_api_params, data=json.dumps({'url': 'https://www.webcreatorbox.com/wp-content/uploads/2013/08/zombie-orizinal.jpg'}))
+			print('Reading data from response...')
+			faces = face_api_response.text #json()
+			print(faces)
 			with open(filename, 'a+') as file:
-				file.write(post_data.decode('utf-8') + '\n')
+				file.write(faces + '\n')
+			self.send_response(200)
+			self.send_header('Content-type', 'application/json')
+			self.end_headers()
+			self.wfile.write(bytes(faces, 'utf-8'))
+			return
+
+			#content_length = int(self.headers['Content-Length']) # <--- Gets the size of data
+			#post_data = self.rfile.read(content_length) # <--- Gets the data itself
+			#self._set_response()
+			#self.wfile.write(post_data)
+			
+			#with open(filename, 'a+') as file:
+			#	file.write(post_data.decode('utf-8') + '\n')
 
 	#Handler for the GET requests
 	def do_GET(self):

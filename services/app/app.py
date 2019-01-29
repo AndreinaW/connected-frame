@@ -61,13 +61,13 @@ class myHandler(BaseHTTPRequestHandler):
 			conn = http.client.HTTPSConnection(face_api_url)
 			conn.request("POST", face_api_url_extension % params, post_data, face_api_headers)
 			response = conn.getresponse()
-			data = response.read().decode()
+			data = response.read().decode('utf-8')
 			conn.close()
 
 			# Print and write received data to the file named 'data'
 			print(data)
 			with open(filename, 'a+') as file:
-				file.write(data.decode('utf-8') + '\n')
+				file.write(data + '\n')
 			return
 
 			# Send data through statistics then dashboard services

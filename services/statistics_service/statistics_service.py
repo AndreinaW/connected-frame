@@ -40,13 +40,9 @@ class statistics_service_handler(BaseHTTPRequestHandler):
 				return_json['gender'] = entry['faceAttributes']['gender']
 				return_json['age'] = entry['faceAttributes']['age']
 
-				json_data_result = json.dumps(return_json)
-				print(json_data_result)
-				return_array.append(json_data_result)
+				return_array.append(return_json)
 
-			final_res = json.dumps(return_array)
-
-			self.wfile.write(str.encode(final_res))
+			self.wfile.write(str.encode(json.dumps(return_array)))
 
 try:
 	#Create a web server and define the handler to manage the

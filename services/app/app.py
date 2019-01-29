@@ -1,4 +1,5 @@
 #!/usr/bin/python
+import http.client, base64
 from http.server import BaseHTTPRequestHandler,HTTPServer
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
@@ -13,16 +14,20 @@ filename = 'data'
 
 # Face API constants
 key = 'd369abc5e70741e5993f9e54e362169f'
-face_api_url = 'https://westeurope.api.cognitive.microsoft.com/face/v1.0'
+
+face_api_url = 'westeurope.api.cognitive.microsoft.com'
+face_api_url_extension = "/face/v1.0/detect?%s"
 face_api_headers = {'Content-Type': 'application/json', 'Ocp-Apim-Subscription-Key': key }
-face_api_params = {
-'returnFaceId': 'true',
-'returnFaceLandmarks': 'false',
-'returnFaceAttributes': 'age,gender,smile,headPose,emotion,exposure'
-}
+
+params = urlencode({
+	'returnFaceId': 'true',
+	'returnFaceLandmarks': 'false',
+	'returnFaceAttributes': 'age,gender,smile,headPose,emotion,exposure'
+})
 
 face_sample_image = 'face_sample.jpg'
 
+# Services constants
 url_stats = 'http://localhost:8081/compute_stats'
 url_dashboard = 'http://localhost:8082/add_data'
 
@@ -38,13 +43,6 @@ class myHandler(BaseHTTPRequestHandler):
 	def encode_resp(self, content):
 		return content.format(self.path).encode('utf-8')
 
-	def send_to_statistics_service(self, content):
-
-
-
-	def send_to_dashboard_service(self, content):
-		request = Request(url
-
 	def send_basic_post_request(self, url, content):
 		request = Request(url, str.encode(content))
 		return urlopen(request).read().decode()
@@ -52,25 +50,23 @@ class myHandler(BaseHTTPRequestHandler):
 	#Handler for the POST requests
 	def do_POST(self):
 		if self.path=="/faces":
-			#post_fields = '[{"faceId": "7849bc2e-31a9-45de-8739-7c891da61596","faceRectangle": {"top": 1120,"left": 3226,"width": 1688,"height": 1688},"faceAttributes": {"smile": 0.001,"headPose": {"pitch": 0.0,"roll": 9.6,"yaw": 0.3},"gender": "female","age": 27.0,"emotion": {"anger": 0.0,"contempt": 0.0,"disgust": 0.0,"fear": 0.0,"happiness": 0.001,"neutral": 0.993,"sadness": 0.001,"surprise": 0.004},"exposure": {"exposureLevel": "overExposure","value": 0.82}}}]'
-			#basic_stats = self.send_basic_post_request(url_stats, post_fields)
-			#self.send_basic_post_request(url_dashboard, basic_stats)
 
-			"""
-			#data = open(os.path.abspath(face_sample_image), 'rb').read()
-			print('Sending img to Face API...')
-			face_api_response = requests.post(face_api_url, headers=face_api_headers, params=face_api_params, data=json.dumps({'url': 'https://www.webcreatorbox.com/wp-content/uploads/2013/08/zombie-orizinal.jpg'}))
-			print('Reading data from response...')
-			faces = face_api_response.text #json()
-			print(faces)
-			with open(filename, 'a+') as file:
-				file.write(faces + '\n')
+			conn = http.client.HTTPSConnection(face_api_url)
+			conn.request("POST", face_api_url_extension % params, "{'url': 'https://www.webcreatorbox.com/wp-content/uploads/2013/08/zombie-orizinal.jpg'}", face_api_headers)
+			response = conn.getresponse()
+			data = response.read()
+			print(data)
+			conn.close()
+
 			self.send_response(200)
 			self.send_header('Content-type', 'application/json')
 			self.end_headers()
-			self.wfile.write(bytes(faces, 'utf-8'))
+			self.wfile.write(data)
 			return
-			"""
+
+			#post_fields = '[{"faceId": "7849bc2e-31a9-45de-8739-7c891da61596","faceRectangle": {"top": 1120,"left": 3226,"width": 1688,"height": 1688},"faceAttributes": {"smile": 0.001,"headPose": {"pitch": 0.0,"roll": 9.6,"yaw": 0.3},"gender": "female","age": 27.0,"emotion": {"anger": 0.0,"contempt": 0.0,"disgust": 0.0,"fear": 0.0,"happiness": 0.001,"neutral": 0.993,"sadness": 0.001,"surprise": 0.004},"exposure": {"exposureLevel": "overExposure","value": 0.82}}}]'
+			#basic_stats = self.send_basic_post_request(url_stats, post_fields)
+			#self.send_basic_post_request(url_dashboard, basic_stats)
 
 			#content_length = int(self.headers['Content-Length']) # <--- Gets the size of data
 			#post_data = self.rfile.read(content_length) # <--- Gets the data itself

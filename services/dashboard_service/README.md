@@ -16,3 +16,8 @@ Routes exposées :
 	- /add_data : POST
 		Entrée : Résultat du service statistiques
 		Sortie : /
+
+Docker :
+
+	1 - docker build --tag dash_service .
+	2 - docker run --name dashboard_service -p 8082:8082 dash_service

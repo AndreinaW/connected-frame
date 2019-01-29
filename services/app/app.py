@@ -80,12 +80,6 @@ class myHandler(BaseHTTPRequestHandler):
 			self.end_headers()
 			self.wfile.write('{"response":"ok"}')
 
-
-
-			#post_fields = '[{"faceId": "7849bc2e-31a9-45de-8739-7c891da61596","faceRectangle": {"top": 1120,"left": 3226,"width": 1688,"height": 1688},"faceAttributes": {"smile": 0.001,"headPose": {"pitch": 0.0,"roll": 9.6,"yaw": 0.3},"gender": "female","age": 27.0,"emotion": {"anger": 0.0,"contempt": 0.0,"disgust": 0.0,"fear": 0.0,"happiness": 0.001,"neutral": 0.993,"sadness": 0.001,"surprise": 0.004},"exposure": {"exposureLevel": "overExposure","value": 0.82}}}]'
-			#basic_stats = self.send_basic_post_request(url_stats, post_fields)
-			#self.send_basic_post_request(url_dashboard, basic_stats)
-
 	#Handler for the GET requests
 	def do_GET(self):
 		if self.path=="/camera_alarm":

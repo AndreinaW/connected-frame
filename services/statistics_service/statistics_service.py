@@ -5,8 +5,6 @@ import json
 
 PORT_NUMBER = 8081
 
-
-
 #This class will handles any incoming request from
 #the browser 
 class statistics_service_handler(BaseHTTPRequestHandler):

@@ -2,32 +2,32 @@ test2
 test3
 
 					{ "error": { "code": "ResourceNotFound", "message": "The requested resource was not found." } }
-		        	
+
 
 					{ "error": { "code": "ResourceNotFound", "message": "The requested resource was not found." } }
-		        	
+
 {
     "test": "testing from rested"
 }
 
 					{ "error": { "code": "ResourceNotFound", "message": "The requested resource was not found." } }
-		        	
+
 
 					{ "error": { "code": "ResourceNotFound", "message": "The requested resource was not found." } }
-		        	
+
 {
     "test": "testing from rested"
 }
 
 					{ "error": { "code": "ResourceNotFound", "message": "The requested resource was not found." } }
-		        	
-
-					{ "error": { "code": "ResourceNotFound", "message": "The requested resource was not found." } }
-		        	
 
 
 					{ "error": { "code": "ResourceNotFound", "message": "The requested resource was not found." } }
-		        	
+
+
 
 					{ "error": { "code": "ResourceNotFound", "message": "The requested resource was not found." } }
-		        	
+
+
+					{ "error": { "code": "ResourceNotFound", "message": "The requested resource was not found." } }
+

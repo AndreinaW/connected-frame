@@ -5,4 +5,4 @@ WORKDIR /app
 
 EXPOSE 8082
 
-CMD python ./dashboard_service.py
+CMD ["python", "-u", "dashboard_service.py"]

@@ -61,7 +61,7 @@ class myHandler(BaseHTTPRequestHandler):
 			conn = http.client.HTTPSConnection(face_api_url)
 			conn.request("POST", face_api_url_extension % params, post_data, face_api_headers)
 			response = conn.getresponse()
-			data = response.read().decode()
+			data = response.read().decode('utf-8')
 			conn.close()
 
 			# Print and write received data to the file named 'data'
@@ -69,6 +69,7 @@ class myHandler(BaseHTTPRequestHandler):
 			with open(filename, 'a+') as file:
 				file.write(data + '\n')
 
+			# Send data through statistics then dashboard services
 			basic_stats = self.send_basic_post_request(url_stats, data)
 			self.send_basic_post_request(url_dashboard, basic_stats)
 

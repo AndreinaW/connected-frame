@@ -137,12 +137,3 @@ ifMatched = matchWordsWithKeywords(listWordsSpeech, listKeywords)
 
 
 
-
-# Example using threads in a non-blocking way
-#mycallback = MyRecognizeCallback()
-#audio_file = open(join(dirname(__file__), '../resources/speech.wav'), 'rb')
-#audio_source = AudioSource(audio_file)
-#recognize_thread = threading.Thread(
-#   target=service.recognize_using_websocket,
-#   args=(audio_source, "audio/l16; rate=44100", mycallback))
-#recognize_thread.start()

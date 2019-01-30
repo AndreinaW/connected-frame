@@ -2,16 +2,29 @@ import numpy as np
 import cv2
 import time
 
-from http.server import BaseHTTPRequestHandler,HTTPServer
-from urllib.parse import urlencode
-from urllib.request import Request, urlopen
+try:
+	from urllib.parse import urlparse
+except ImportError:
+	from urlparse import urlparse
+from urllib2 import urlopen
+import httplib
+import sys
 
 mime_octet_stream = 'application/octet-stream'
 mime_json = 'application/json'
 
-app_url = '192.168.1.33:8080'
+app_ip = 'localhost'
+app_port = '8080'
+
+if len(sys.argv) == 3:
+	app_ip = sys.argv[1]
+	app_port = sys.argv[2]
+
+app_url = app_ip + ':' + app_port
 app_url_extension = "/faces"
 app_api_headers = {'Content-Type': mime_octet_stream }
+
+print('Server url: ' + app_url)
 
 # multiple cascades: https://github.com/Itseez/opencv/tree/master/data/haarcascades
 faceCascade = cv2.CascadeClassifier('Cascades/haarcascade_frontalface_default.xml')
@@ -22,7 +35,7 @@ cap.set(4,480) # set Height
 
 while True:
 	ret, img = cap.read()
-	img = cv2.flip(img, -1)
+	#img = cv2.flip(img, -1)
 	gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 	faces = faceCascade.detectMultiScale(
 		gray,
@@ -40,7 +53,7 @@ while True:
 		print ('Detecting ' + str(len(faces)) + ' faces!')
 		cv2.imwrite('images/face.jpg', gray, [int(cv2.IMWRITE_JPEG_QUALITY)])
 		local_data = open('images/face.jpg', 'rb').read()
-		conn = http.client.HTTPConnection(app_url)
+		conn = httplib.HTTPConnection(app_url)
 		conn.request("POST", app_url_extension, local_data)
 		time.sleep(3)
 

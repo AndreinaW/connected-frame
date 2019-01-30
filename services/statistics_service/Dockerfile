@@ -5,4 +5,4 @@ WORKDIR /app
 
 EXPOSE 8081
 
-CMD python ./statistics_service.py
+CMD ["python", "-u", "statistics_service.py"]

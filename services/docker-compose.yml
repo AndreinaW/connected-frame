@@ -6,6 +6,9 @@ services:
     container_name: app
     build:
       context: ./app
+    links:
+      - stats
+      - dashboard
     depends_on:
       - stats
       - dashboard

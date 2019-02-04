@@ -31,8 +31,8 @@ params = urlencode({
 face_sample_image = 'face_sample.jpg'
 
 # Services constants
-url_stats = 'http://localhost:8081/compute_stats'
-url_dashboard = 'http://localhost:8082/add_data'
+url_stats = 'stats:8081/compute_stats'
+url_dashboard = 'dashboard:8082/add_data'
 
 #This class will handles any incoming request from
 #the browser 

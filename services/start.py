@@ -42,10 +42,10 @@ def changeDirectory(path):
 ###------------------------------------------------------------------------------
 
 changeDirectory(mApplication)
-executeCommand('python ' + 'app.py')
-changeDirectory('../..')
+executeCommand('python3 ' + 'app.py')
+changeDirectory('..')
 changeDirectory(mStatisticsService)
-executeCommand('python ' + 'statistics_service.py')
-changeDirectory('../..')
+executeCommand('python3 ' + 'statistics_service.py')
+changeDirectory('..')
 changeDirectory(mDashboardService)
-executeCommand('python ' + 'dashboard_service.py')
+executeCommand('python3 ' + 'dashboard_service.py')

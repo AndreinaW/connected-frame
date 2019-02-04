@@ -3,7 +3,6 @@ import http.client, base64
 from http.server import BaseHTTPRequestHandler,HTTPServer
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
-import json
 
 mime_octet_stream = 'application/octet-stream'
 mime_json = 'application/json'

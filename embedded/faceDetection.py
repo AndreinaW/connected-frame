@@ -1,6 +1,7 @@
 import numpy as np
 import cv2
 import time
+import paho.mqtt.client as mqtt
 
 try:
 	from urllib.parse import urlparse
@@ -10,21 +11,16 @@ from urllib2 import urlopen
 import httplib
 import sys
 
-mime_octet_stream = 'application/octet-stream'
-mime_json = 'application/json'
+mosquitto_mqtt_broker_ip = 'localhost'
+mosquitto_mqtt_broker_port = '1883'
 
-app_ip = 'localhost'
-app_port = '8080'
+mosquitto_mqtt_broker_url = mosquitto_mqtt_broker_ip + ':' + mosquitto_mqtt_broker_port
+topic = 'sensors/camera'
 
-if len(sys.argv) == 3:
-	app_ip = sys.argv[1]
-	app_port = sys.argv[2]
+print('Mosquitto MQTT Broker url: ' + mosquitto_mqtt_broker_url)
 
-app_url = app_ip + ':' + app_port
-app_url_extension = "/faces"
-app_api_headers = {'Content-Type': mime_octet_stream }
-
-print('Server url: ' + app_url)
+client = mqtt.Client()
+client.connect(mosquitto_mqtt_broker_ip, int(mosquitto_mqtt_broker_port), 60)
 
 # multiple cascades: https://github.com/Itseez/opencv/tree/master/data/haarcascades
 faceCascade = cv2.CascadeClassifier('Cascades/haarcascade_frontalface_default.xml')
@@ -53,8 +49,7 @@ while True:
 		print ('Detecting ' + str(len(faces)) + ' faces!')
 		cv2.imwrite('images/face.jpg', gray, [int(cv2.IMWRITE_JPEG_QUALITY)])
 		local_data = open('images/face.jpg', 'rb').read()
-		conn = httplib.HTTPConnection(app_url)
-		conn.request("POST", app_url_extension, local_data)
+		client.publish(topic, payload=, qos=0, retain=False)
 		time.sleep(3)
 
 	#cv2.imshow('video',img)

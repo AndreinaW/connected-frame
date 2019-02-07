@@ -1,7 +1,11 @@
 #!/usr/bin/python
 from http.server import BaseHTTPRequestHandler,HTTPServer
+from json_handler import JsonHandler
 from os import curdir, sep
+
 import json
+
+filename = 'data'
 
 PORT_NUMBER = 8081
 
@@ -20,6 +24,22 @@ class statistics_service_handler(BaseHTTPRequestHandler):
 	def set_return_json(self, json_result):
 		self.wfile.write(json_result)
 
+	def do_GET(self):
+		if self.path=="/api/data/total_faces":
+			self._set_response()
+			self.wfile.write(JsonHandler(filename).get_data_from_file("totalFaces"))
+
+		elif self.path=="/api/data/avg_age":
+			self._set_response()
+			self.wfile.write(JsonHandler(filename).get_data_from_file("currentAverageAge"))
+
+		elif self.path=="/api/data/parity":
+			self._set_response()
+			self.wfile.write(JsonHandler(filename).get_data_from_file("parity"))
+
+		elif self.path=="/api/data/expressions":
+			self._set_response()
+			self.wfile.write(JsonHandler(filename).get_data_from_file("expressions"))
 
 	def do_POST(self):
 		if self.path=="/compute_stats":
@@ -27,20 +47,9 @@ class statistics_service_handler(BaseHTTPRequestHandler):
 			post_data = self.rfile.read(content_length) # <--- Gets the data itself
 			self._set_response()
 
-			json_data = json.loads(post_data)
+			JsonHandler(filename).process_data_from_json(post_data)
 
-			return_array = []
-
-			for entry in json_data:
-				print(entry)
-
-				return_json = {}
-				return_json['gender'] = entry['faceAttributes']['gender']
-				return_json['age'] = entry['faceAttributes']['age']
-
-				return_array.append(return_json)
-
-			self.wfile.write(str.encode(json.dumps(return_array)))
+			self.wfile.write(post_data)
 
 try:
 	#Create a web server and define the handler to manage the

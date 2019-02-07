@@ -31,16 +31,18 @@ params = urlencode({
 face_sample_image = 'face_sample.jpg'
 
 # Services constants
-url_stats = 'stats:8081/compute_stats'
-url_dashboard = 'dashboard:8082/add_data'
+url_stats = 'http://localhost:8081'
+url_stats_post_extension = '/compute_stats'
+url_dashboard = 'http://localhost:8082/add_data'
 
 #This class will handles any incoming request from
 #the browser 
 class myHandler(BaseHTTPRequestHandler):
 
-	def _set_response(self):
+	def _set_response(self, content_type='text/html'):
 		self.send_response(200)
-		self.send_header('Content-type', 'text/html')
+		self.send_header('Content-type', content_type)
+		self.send_header('Access-Control-Allow-Origin', '*')
 		self.end_headers()
 
 	def encode_resp(self, content):
@@ -49,6 +51,10 @@ class myHandler(BaseHTTPRequestHandler):
 	def send_basic_post_request(self, url, content):
 		request = Request(url, str.encode(content))
 		return urlopen(request).read().decode()
+
+	def send_basic_get_request(self, url, extra_path):
+		request = Request(url + extra_path)
+		return urlopen(url + extra_path).read()
 
 	#Handler for the POST requests
 	def do_POST(self):
@@ -70,7 +76,7 @@ class myHandler(BaseHTTPRequestHandler):
 				file.write(data + '\n')
 
 			# Send data through statistics then dashboard services
-			basic_stats = self.send_basic_post_request(url_stats, data)
+			basic_stats = self.send_basic_post_request(url_stats + url_stats_post_extension, data)
 			self.send_basic_post_request(url_dashboard, basic_stats)
 
 			# Send response
@@ -80,45 +86,15 @@ class myHandler(BaseHTTPRequestHandler):
 
 	#Handler for the GET requests
 	def do_GET(self):
-		if self.path=="/camera_alarm":
+		if self.path=="/api/data/total_faces" or self.path=="/api/data/avg_age" or self.path=="/api/data/parity" or self.path=="/api/data/expressions":
+			self._set_response(mime_json)
+			self.wfile.write(self.send_basic_get_request(url_stats, self.path))
+
+		elif self.path=="/camera_alarm":
 			self.sendAlarm()
-			self.send_response(200)
-			self.send_header('Content-type', 'text/html')
-			self.end_headers()
-			return
+			self._set_response()
 
-		try:
-			#Check the file extension required and
-			#set the right mime type
-
-			sendReply = False
-			if self.path.endswith(".html"):
-				mimetype='text/html'
-				sendReply = True
-			if self.path.endswith(".jpg"):
-				mimetype='image/jpg'
-				sendReply = True
-			if self.path.endswith(".gif"):
-				mimetype='image/gif'
-				sendReply = True
-			if self.path.endswith(".js"):
-				mimetype='application/javascript'
-				sendReply = True
-			if self.path.endswith(".css"):
-				mimetype='text/css'
-				sendReply = True
-
-			if sendReply == True:
-				#Open the static file requested and send it
-				f = open(curdir + sep + self.path, 'rb') 
-				self.send_response(200)
-				self.send_header('Content-type',mimetype)
-				self.end_headers()
-				self.wfile.write(f.read())
-				f.close()
-			return
-		except IOError:
-			self.send_error(404,'File Not Found: %s' % self.path)
+		return
 
 	def sendAlarm(self):
 		SSL_PORT = 465

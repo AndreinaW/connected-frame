@@ -49,7 +49,7 @@ while True:
 		print ('Detecting ' + str(len(faces)) + ' faces!')
 		cv2.imwrite('images/face.jpg', gray, [int(cv2.IMWRITE_JPEG_QUALITY)])
 		local_data = open('images/face.jpg', 'rb').read()
-		client.publish(topic, payload=, qos=0, retain=False)
+		client.publish(topic, payload=local_data, qos=0, retain=False)
 		time.sleep(3)
 
 	#cv2.imshow('video',img)

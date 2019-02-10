@@ -8,10 +8,7 @@ from watson_developer_cloud.websocket import SynthesizeCallback
 # If service instance provides API key authentication
 service = TextToSpeechV1(
      ## url is optional, and defaults to the URL below. Use the correct URL for your region.
-     url='https://gateway-lon.watsonplatform.net/text-to-speech/api',
-    
-
-    iam_apikey='2rmmSxBMRZAQ2hU1U8wOq0nSw5_DhCi8rRPLo426U2ER')   #CHANGER A CETTE CLE
+                         url='https://gateway-lon.watsonplatform.net/text-to-speech/api', iam_apikey='qCqo9iBfgOEjFUNpZMB3VjO9EmgI6qyEabblV5REeyIA')   #CHANGER A CETTE CLE
 
 
 
@@ -94,15 +91,19 @@ class MySynthesizeCallback(SynthesizeCallback):
         print('Done synthesizing. Closing the connection')
 
 
-file = open("./resources/test.txt", "r")
-txt = file.read()
-print(txt)
 
 
-my_callback = MySynthesizeCallback()
-service.synthesize_using_websocket(txt,
-                                   my_callback,
-                                   accept='audio/wav',
-                                   voice='en-US_AllisonVoice'
-                                   )
+
+
+
+def mainTextToSpeech(fileTxt):
+    file = open("./resources/" + fileTxt, "r")
+    txt = file.read()
+    print(txt)
+    my_callback = MySynthesizeCallback()
+    service.synthesize_using_websocket(txt,
+                                       my_callback,
+                                       accept='audio/wav',
+                                       voice='en-US_AllisonVoice'
+                                       )
 

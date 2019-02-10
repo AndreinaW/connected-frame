@@ -82,10 +82,10 @@ def matchWordsWithKeywords(listWords, listKeywords):
             if compt == size:
                 print("Found matching for sentence : " + questionLowCase)
                 print("The response : " + dict[questionLowCase])
-                return questionLowCase
+                return dict[questionLowCase]
         compt = 0
     print("Matching not found ! ")
-    return null
+    return None
 
 
 
@@ -118,14 +118,14 @@ class MyRecognizeCallback(RecognizeCallback):
         print(data)
 
 
-
-textRecognized = recognition('./resources/test.wav')
-listWordsSpeech = retriveWordsSpeech(textRecognized)
-#listKeywords = retriveKeyWords('./key_words_questions.txt')
-listKeywords = retriveKeyWordsFromFile()
-print(listKeywords)
-ifMatched = matchWordsWithKeywords(listWordsSpeech, listKeywords)
-
+def  mainSpeechToText(file):
+    textRecognized = recognition('./resources/test.wav')
+    listWordsSpeech = retriveWordsSpeech(textRecognized)
+    #listKeywords = retriveKeyWords('./key_words_questions.txt')
+    listKeywords = retriveKeyWordsFromFile()
+    print(listKeywords)
+    ifMatched = matchWordsWithKeywords(listWordsSpeech, listKeywords)
+    return ifMatched
 
 
 

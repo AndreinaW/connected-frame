@@ -1,1 +1,6 @@
-Hello love. I am just testing. So how are you? Wanna go home?
+Hello there. I'm here to share interesting information with you. Just say connected frame, wait for the beep and then ask me one of the following questions:
+Name?
+Painter?
+Year of painting?
+
+Be careful, you have to ask your question before the second beep goes off.

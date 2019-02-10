@@ -66,9 +66,10 @@ face_sample_image = 'face_sample.jpg'
 # Services constants
 url_stats = 'stats:8081/compute_stats'
 url_dashboard = 'dashboard:8082/add_data'
-#url_speech_to_text = 'speech:8083/speech_to_text'
-#url_text_to_speech = 'text:8084/text_to_speech'
 
+url_stats = 'http://localhost:8081'
+url_stats_post_extension = '/compute_stats'
+url_dashboard = 'http://localhost:8082/add_data'
 
 #This class will handles any incoming request from
 #the browser 
@@ -142,33 +143,6 @@ class myHandler(BaseHTTPRequestHandler):
             self.send_header('Content-type', 'application/json')
             self.end_headers()
         
-            
-        if self.path=="/playResponse":
-            app_url = 'localhost:8080'
-            file_to_transfer = 'speech.wav'
-            
-            # Send post data to Face API
-            conn = http.client.HTTPSConnection(face_api_url)
-            conn.request("POST", face_api_url_extension % params, post_data, face_api_headers)
-            response = conn.getresponse()
-            data = response.read().decode('utf-8')
-            conn.close()
-            
-            # Send response
-            self.send_response(200)
-            self.send_header('Content-type', 'application/json')
-            self.end_headers()
-                
-#            mime_octet_stream = 'application/octet-stream'
-#mime_json = 'application/json'
-#
-#app_url = 'localhost:8080'
-#app_url_extension = "/faces"
-#face_api_headers = {'Content-Type': mime_octet_stream }
-#
-#face_sample_image = 'face_sample.jpg'
-
-
 
 
     #Handler for the GET requests
@@ -232,6 +206,7 @@ class myHandler(BaseHTTPRequestHandler):
         with smtplib.SMTP_SSL(SMTP_GMAIL_SERVER, SSL_PORT, context=context) as smtp_server:
             smtp_server.login(GMAIL_ACCOUNT, GMAIL_PASSWORD)
             smtp_server.sendmail(sender_email, receiver_email, message)
+
 
 # Execution starts here
 try:

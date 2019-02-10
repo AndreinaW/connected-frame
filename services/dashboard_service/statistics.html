@@ -20,52 +20,13 @@
     <div class="w3-container w3-hover-light-gray w3-border-top">
         <h1 class="w3-xxlarge">Face expressions</h1>
         <canvas id="face_expression_chart"></canvas>
-        <script type="text/javascript">
-            var ctx = document.getElementById('face_expression_chart').getContext('2d');
-            // And for a doughnut chart
-            var myDoughnutChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: ["Anger", "Contempt", "Disgust", "Fear", "Happiness", "Neutral", "Sadness", "Surprise"],
-                    datasets: [{
-                        data: [1, 3, 4, 6, 2, 10, 5, 7],
-                        backgroundColor: [
-                            'rgb(157, 41, 51)',   // Anger
-                            'rgb(135, 95, 154)',  // Contempt
-                            'rgb(141, 178, 85)',  // Disgust
-                            'rgb(19, 15, 64)',    // Fear
-                            'rgb(224, 86, 253)',  // Happiness
-                            'rgb(191, 191, 191)', // Neutral
-                            'rgb(83, 92, 104)',   // Sadness
-                            'rgb(126, 214, 223)'  // Surprise
-                        ],
-                        borderColor: 'rgb(85, 85, 85)',
-                    }]
-                },
-                options: {}
-            });
-        </script>
+        <script type="text/javascript" src="js/doughnut_loader.js"></script>
     </div>
 
     <div class="w3-container w3-hover-light-gray w3-border-top">
         <h1 class="w3-xxlarge">Man / Woman parity</h1>
         <canvas class="w3-padding-32" id="man_woman_parity_chart"></canvas>
-        <script type="text/javascript">
-            var ctx = document.getElementById('man_woman_parity_chart').getContext('2d');
-            // For a pie chart
-            var myPieChart = new Chart(ctx, {
-                type: 'pie',
-                data: {
-                    labels: ["Men", "Women"],
-                    datasets: [{
-                        data: [10, 15],
-                        backgroundColor: ['rgb(41, 128, 185)', 'rgb(142, 68, 173)'],
-                        borderColor: 'rgb(85, 85, 85)'
-                    }],
-                },
-                options: {}
-            });
-        </script>
+        <script type="text/javascript" src="js/chart_loader.js"></script>
     </div>
 
     <div class="w3-container w3-hover-light-gray w3-border-top">
@@ -77,13 +38,14 @@
             </tr>
             <tr>
                 <td>Total number of faces taken in photo</td>
-                <td>10</td>
+                <td id="total_faces">10</td>
             </tr>
             <tr>
                 <td>Average Age</td>
-                <td>24</td>
+                <td id="avg_age">24</td>
             </tr>
         </table>
+        <script type="text/javascript" src="js/stats_loader.js"></script>
     </div>
 </body>
 

@@ -23,9 +23,6 @@ class dashboard_service_handler(BaseHTTPRequestHandler):
 			post_data = self.rfile.read(content_length) # <--- Gets the data itself
 			self._set_response()
 			self.wfile.write(post_data)
-			
-			with open(filename, 'a+') as file:
-				file.write(post_data.decode('utf-8') + '\n')
 
 	#Handler for the GET requests
 	def do_GET(self):

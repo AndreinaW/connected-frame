@@ -4,6 +4,22 @@ import snowboydecoder
 import sys
 import signal
 import time
+import paho.mqtt.client as mqtt
+
+#************* mqtt *************
+mosquitto_mqtt_broker_ip = 'localhost'
+mosquitto_mqtt_broker_port = '1883'
+
+mosquitto_mqtt_broker_url = mosquitto_mqtt_broker_ip + ':' + mosquitto_mqtt_broker_port
+topic = 'snowboy'
+
+
+print('Mosquitto MQTT Broker url: ' + mosquitto_mqtt_broker_url)
+
+client = mqtt.Client()
+client.connect(mosquitto_mqtt_broker_ip, int(mosquitto_mqtt_broker_port), 60)
+
+#************* mqtt *************
 
 interrupted = False
 playIsSuccess = True
@@ -48,6 +64,11 @@ def audio_rec_callback(fname):
     print("beep FINISH recording...")
     play_beep()
     play_audio(fname)   # todo: erase this
+    #************* mqtt *************
+    local_data = open("./resources/audio_recorded.wav", 'rb').read()
+    client.publish(topic, payload=local_data, qos=0, retain=False)
+    #************* mqtt *************
+
 
     if playIsSuccess:
         print("send server")

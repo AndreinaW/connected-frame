@@ -2,8 +2,6 @@
 from __future__ import print_function
 from os.path import join, dirname
 from watson_developer_cloud import TextToSpeechV1
-from playsound import playsound
-from threading import Thread
 
 # If service instance provides API key authentication
 service = TextToSpeechV1(

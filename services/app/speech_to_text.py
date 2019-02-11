@@ -81,7 +81,7 @@ def matchWordsWithKeywords(listWords, listKeywords):
                 compt+=1
             if compt == size:
                 print("Found matching for sentence : " + questionLowCase)
-                print("The response : " + dict[questionLowCase])
+                print("The response from speech to text : " + dict[questionLowCase])
                 return dict[questionLowCase]
         compt = 0
     print("Matching not found ! ")

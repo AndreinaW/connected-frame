@@ -103,14 +103,14 @@ class myHandler(BaseHTTPRequestHandler):
             response = speech.mainSpeechToText(post_data)#(post_data)
             if response == None:
                 response = "I don't understand"
-            data = text.mainTextToSpeech(response)
+            fileName = text.text_to_speech(response)
 
-            # Print and write received data to the file named 'data'
-            print(data)
+            # Print and write file's name
+            print(fileName)
             
             #send file to raspberry pi
-            # with open("test.wav", 'rb') as data:
-            requests.post('http://176.143.207.186:2222/play_sound', files = {'file1': data} )
+            with open(fileName, 'rb') as data:
+                requests.post('http://176.143.207.186:2222/play_sound', files = {'file1': data} )
         
             # Send response
             self._set_response()

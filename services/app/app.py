@@ -60,7 +60,7 @@ face_sample_image = 'face_sample.jpg'
 # MQTT Constants
 raspi_mqtt_broker_ip = ''
 raspi_mqtt_broker_port = 1883
-topics = {'sensors/camera', 'sensors/light'}
+topics = {'sensors/camera', 'sensors/light', 'audio_register'}
 
 if len(sys.argv) > 1:
     raspi_mqtt_broker_ip = sys.argv[1]

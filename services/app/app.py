@@ -32,6 +32,8 @@ import text_to_speech as text
 import smtplib, ssl
 import json
 import os
+import requests
+
 # from textmagic.rest import TextmagicRestClient
 
 PORT_NUMBER = 8080
@@ -107,12 +109,9 @@ class myHandler(BaseHTTPRequestHandler):
             print(data)
             
             #send file to raspberry pi
-            conn = http.client.HTTPSConnection(raspberry_pi_url)
-            conn.request("POST", raspberry_pi_url_extension, data, raspberry_pi_headers)
-            response = conn.getresponse()
-            data = response.read().decode('utf-8')
-            conn.close()
-            
+            # with open("test.wav", 'rb') as data:
+            requests.post('http://176.143.207.186:2222/play_sound', files = {'file1': data} )
+        
             # Send response
             self._set_response()
     

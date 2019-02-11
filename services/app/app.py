@@ -4,6 +4,7 @@ import ssl
 import json
 import os
 import sys
+import requests
 
 # http
 import http.client
@@ -26,16 +27,14 @@ import multiprocessing
 
 #sys.path.insert(0, '/Users/asia/Desktop/connected-frame/services')
 
-# try:
-import speech
-import text
+#try:
+import speech_to_text as speech
+import text_to_speech as text
 
 # except ImportError:
 #    print('No Import')
 ##imp.load_dynamic('Speech', '/Users/asia/Desktop/connected-frame/speech-to-text_IBM')
-# print(sys.path)
 
-threads = []
 PORT_NUMBER = 8080
 filename = 'data'
 
@@ -111,20 +110,16 @@ class myHandler(BaseHTTPRequestHandler):
             # speech to ext job ----------------
             response = speech.mainSpeechToText(post_data)  # (post_data)
             if response == None:
-                response = 'I don\'t understand'
-            data = text.mainTextToSpeech(response)
+                response = "I don't understand"
+            fileName = text.text_to_speech(response)
 
-            # Print and write received data to the file named 'data'
-            print(data)
-
-            # send file to raspberry pi
-            conn = http.client.HTTPSConnection(raspberry_pi_url)
-            conn.request('POST', raspberry_pi_url_extension,
-                         data, raspberry_pi_headers)
-            response = conn.getresponse()
-            data = response.read().decode('utf-8')
-            conn.close()
-
+            # Print and write file's name
+            print(fileName)
+            
+            #send file to raspberry pi
+            with open(fileName, 'rb') as data:
+                requests.post('http://176.143.207.186:2222/play_sound', files = {'file1': data} )
+        
             # Send response
             self._set_response()
 

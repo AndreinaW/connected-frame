@@ -19,40 +19,40 @@ iam_apikey='57ZvOyql78xGGdNlwd3BBHlio9wm5_ldItfG1kpFw3sa')
 
 
 
-def recognition(path):
+def recognition(path, fileStream):
     audio_file = open(join(dirname(__file__), path),
                       'rb')
     recognized = service.recognize(
-                                  audio=audio_file,
-                                  content_type='audio/wav',
+                                  audio=fileStream,
+                                   content_type='application/octet-stream',
                                   timestamps=True,
                                   word_confidence=True)
     textRecognized = json.dumps(recognized.get_result())
-    #print(textRecognized)
     return textRecognized
 
 #retrive words from user's speech -> in form of list of words
 def retriveWordsSpeech(textRecognized):
-    keyWords = re.findall('"[a-z]+"', textRecognized[50:])
+    keyWords = re.findall('"[a-z]+"', textRecognized)
     res = []
     for el in keyWords:
-        if ("confidence" in el):
-            break
+        #if ("confidence" in el):
+        #   break
         res.append(el[1:-1])
+    res = res[4:]
     print("Retrive words from user's speech : " )
     print(res)
     return res
 
 
 #retrive the keywords(questions) from the file containing all questions avaliable
-def retriveKeyWordsFromFile(filePath):
-    keyWords = open(filePath,'r')
-    questions = []
-    questions = keyWords.readlines()
-    res = []
-    for question in questions:
-        res.append(question.strip())
-    return res
+#def retriveKeyWordsFromFile(filePath):
+#    keyWords = open(filePath,'r')
+#    questions = []
+#    questions = keyWords.readlines()
+#    res = []
+#    for question in questions:
+#        res.append(question.strip())
+#    return res
 
 #retrive the keywords(questions) from the file containing dictionary of form question:response
 def retriveKeyWordsFromFile():
@@ -81,7 +81,7 @@ def matchWordsWithKeywords(listWords, listKeywords):
                 compt+=1
             if compt == size:
                 print("Found matching for sentence : " + questionLowCase)
-                print("The response : " + dict[questionLowCase])
+                print("The response from speech to text : " + dict[questionLowCase])
                 return dict[questionLowCase]
         compt = 0
     print("Matching not found ! ")
@@ -118,10 +118,10 @@ class MyRecognizeCallback(RecognizeCallback):
         print(data)
 
 
-def  mainSpeechToText(file):
-    textRecognized = recognition('./resources/test.wav')
+def  mainSpeechToText(fileStream):
+    textRecognized = recognition('test.wav', fileStream)
+    print(textRecognized)
     listWordsSpeech = retriveWordsSpeech(textRecognized)
-    #listKeywords = retriveKeyWords('./key_words_questions.txt')
     listKeywords = retriveKeyWordsFromFile()
     print(listKeywords)
     ifMatched = matchWordsWithKeywords(listWordsSpeech, listKeywords)
@@ -129,7 +129,7 @@ def  mainSpeechToText(file):
 
 
 
-
+#mainSpeechToText("blabla")
 
 
 

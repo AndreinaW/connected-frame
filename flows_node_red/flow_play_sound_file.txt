@@ -1,0 +1,8 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1561\cocoasubrtf600
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 [\{"id":"7c0e8b04.4b0864","type":"tab","label":"Play sound file","disabled":false,"info":""\},\{"id":"e79575c0.c942a8","type":"debug","z":"7c0e8b04.4b0864","name":"","active":true,"tosidebar":true,"console":false,"tostatus":false,"complete":"req.files","x":488,"y":169,"wires":[]\},\{"id":"e564c6b9.952f28","type":"http in","z":"7c0e8b04.4b0864","name":"","url":"/play_sound","method":"post","upload":true,"swaggerDoc":"","x":209,"y":313,"wires":[["e79575c0.c942a8","f3f85691.acdf98"]]\},\{"id":"f3f85691.acdf98","type":"change","z":"7c0e8b04.4b0864","name":"","rules":[\{"t":"set","p":"payload","pt":"msg","to":"req.files[0].buffer","tot":"msg"\}],"action":"","property":"","from":"","to":"","reg":false,"x":459,"y":313,"wires":[["99c9d3ce.62776"]]\},\{"id":"99c9d3ce.62776","type":"file","z":"7c0e8b04.4b0864","name":"","filename":"to_read.wav","appendNewline":false,"createDir":false,"overwriteFile":"true","x":668.5,"y":312,"wires":[["cbd20963.b325a8"]]\},\{"id":"cbd20963.b325a8","type":"exec","z":"7c0e8b04.4b0864","command":"aplay to_read.wav","addpay":true,"append":"","useSpawn":"false","timer":"","oldrc":false,"name":"","x":757.5,"y":449.5,"wires":[[],[],[]]\}]}

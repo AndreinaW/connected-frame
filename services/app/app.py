@@ -18,8 +18,8 @@ import sys
 #sys.path.insert(0, '/Users/asia/Desktop/connected-frame/services')
 
 #try:
-import speech
-import text
+import speech_to_text as speech
+import text_to_speech as text
 
 #except ImportError:
 #    print('No Import')

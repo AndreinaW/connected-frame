@@ -152,9 +152,23 @@ class myHandler(BaseHTTPRequestHandler):
             self.send_header('Content-type', 'application/json')
             self.end_headers()
 
-    # Handler for the GET requests
+        if self.path == '/questions':
+            # <--- Gets the size of data
+            content_length = int(self.headers['Content-Length'])
+            # <--- Gets the data itself
+            post_data = self.rfile.read(content_length)
+            print(post_data)
 
+
+
+    # Handler for the GET requests
     def do_GET(self):
+        if self.path == '/':
+            f = open("/index.html")
+            self.wfile.write(f.read())
+            f.close()
+            return
+
         if self.path == '/camera_alarm':
             self.sendAlarm()
             self.send_response(200)

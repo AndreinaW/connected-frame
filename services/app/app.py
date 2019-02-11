@@ -15,7 +15,7 @@ from urllib.request import Request, urlopen
 
 # mqtt
 import paho.mqtt.subscribe as subscribe
-import multiprocessing
+import paho.mqtt.client as mqtt
 
 # os.chdir('/Users/asia/Desktop/connected-frame/speech')
 # print(sys.path)
@@ -60,7 +60,7 @@ face_sample_image = 'face_sample.jpg'
 # MQTT Constants
 raspi_mqtt_broker_ip = ''
 raspi_mqtt_broker_port = 1883
-topics = {'sensors/camera', 'sensors/light'}
+topics = ['sensors/camera', 'sensors/light']
 
 if len(sys.argv) > 1:
     raspi_mqtt_broker_ip = sys.argv[1]
@@ -92,10 +92,6 @@ class myHandler(BaseHTTPRequestHandler):
 
     def encode_resp(self, content):
         return content.format(self.path).encode('utf-8')
-
-    def send_basic_post_request(self, url, content):
-        request = Request(url, str.encode(content))
-        return urlopen(request).read().decode()
 
     # Handler for the POST requests
     def do_POST(self):
@@ -130,23 +126,6 @@ class myHandler(BaseHTTPRequestHandler):
             # <--- Gets the data itself
             post_data = self.rfile.read(content_length)
 
-            # Send post data to Face API
-            conn = http.client.HTTPSConnection(face_api_url)
-            conn.request('POST', face_api_url_extension %
-                         params, post_data, face_api_headers)
-            response = conn.getresponse()
-            data = response.read().decode('utf-8')
-            conn.close()
-
-            # Print and write received data to the file named 'data'
-            print(data)
-            with open(filename, 'a+') as file:
-                file.write(data + '\n')
-
-            # Send data through statistics then dashboard services
-            basic_stats = self.send_basic_post_request(url_stats, data)
-            self.send_basic_post_request(url_dashboard, basic_stats)
-
             # Send response
             self.send_response(200)
             self.send_header('Content-type', 'application/json')
@@ -156,7 +135,7 @@ class myHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         if self.path == '/camera_alarm':
-            self.sendAlarm()
+            send_alarm()
             self.send_response(200)
             self.send_header('Content-type', 'text/html')
             self.end_headers()
@@ -195,7 +174,32 @@ class myHandler(BaseHTTPRequestHandler):
         except IOError:
             self.send_error(404, 'File Not Found: %s' % self.path)
 
-    def sendAlarm(self):
+
+def send_basic_post_request(url, content):
+    request = Request(url, str.encode(content))
+    return urlopen(request).read().decode()
+
+
+def face_api(data):
+    # Send post data to Face API
+    conn = http.client.HTTPSConnection(face_api_url)
+    conn.request('POST', face_api_url_extension %
+                    params, data, face_api_headers)
+    response = conn.getresponse()
+    data = response.read().decode('utf-8')
+    conn.close()
+
+    # Print and write received data to the file named 'data'
+    print(data)
+    with open(filename, 'a+') as file:
+        file.write(data + '\n')
+
+    # Send data through statistics then dashboard services
+    basic_stats = send_basic_post_request(url_stats, data)
+    send_basic_post_request(url_dashboard, basic_stats)
+
+
+def send_alarm():
         SSL_PORT = 465
         SMTP_GMAIL_SERVER = 'smtp.gmail.com'
 
@@ -216,37 +220,36 @@ class myHandler(BaseHTTPRequestHandler):
             smtp_server.sendmail(sender_email, receiver_email, message)
 
 
-def subscribre_mqtt():
-    print('Subscribing to %s:%i' % (raspi_mqtt_broker_ip, raspi_mqtt_broker_port))
-    subscribe.callback(
-        on_message_received, topics,
-        qos=0, userdata=None,
-        hostname=raspi_mqtt_broker_ip,
-        port=raspi_mqtt_broker_port,
-        keepalive=60
-    )
-
-
 def on_message_received(client, userdata, message):
-    print('%s %s' % (message.topic, message.payload))
-
-process = multiprocessing.Process(target=subscribre_mqtt)
-
-if __name__ == '__main__':
-    # Execution starts here
-    try:
-        process.start()
-        # Create a web server and define the handler to manage the
-        # incoming request
-        server = HTTPServer(('', PORT_NUMBER), myHandler)
-        print('Started httpserver on port ' + str(PORT_NUMBER))
-
-        # Wait forever for incoming http requests
-        server.serve_forever()
+    if message.topic == topics[0]:
+        print('Photo published on ' + message.topic)
+        face_api(message.payload)
+    elif message.topic == topics[1]:
+        print('%s %s' % (message.topic, message.payload))
+        send_alarm()
 
 
-    except KeyboardInterrupt:
-        print('^C received, shutting down the web server')
-        server.socket.close()
-        process.terminate()
-        process.join()
+client = mqtt.Client('Frameplus Client')
+client.on_message = on_message_received
+client.connect(raspi_mqtt_broker_ip, port=raspi_mqtt_broker_port)
+print('Subscribing to %s:%i on topics: ' % (raspi_mqtt_broker_ip, raspi_mqtt_broker_port))
+print(*topics, sep=', ')
+client.subscribe([(topics[0], 0), (topics[1], 0)])
+
+# Execution starts here
+try:
+    client.loop_start()
+
+    # Create a web server and define the handler to manage the
+    # incoming request
+    server = HTTPServer(('', PORT_NUMBER), myHandler)
+    print('Started httpserver on port ' + str(PORT_NUMBER))
+
+    # Wait forever for incoming http requests
+    server.serve_forever()
+
+
+except KeyboardInterrupt:
+    print('^C received, shutting down the web server')
+    server.socket.close()
+    client.loop_stop()

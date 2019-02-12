@@ -6,24 +6,14 @@ import os
 import sys
 import requests
 
-# os.chdir('/Users/asia/Desktop/connected-frame/speech')
-# print(sys.path)
-#import speech
-#path ='/Users/asia/Desktop/connected-frame/'
-# file=open('speech'.join(path,'speech'))
-# sys.path.append('/Users/asia/Desktop/connected-frame/speech-to-text_IBM')
-#from .. import speech
-# sys.path.append('/Users/asia/Desktop/connected-frame/speech-to-text_IBM')
-#sys.path.insert(0, '/Users/asia/Desktop/connected-frame/services')
-
+sys.path.insert(0, '../speech_text')
+from http.server import BaseHTTPRequestHandler, HTTPServer
 
 # http
 import http.client
 from http.server import HTTPServer
-import Http_App_Server as Http_App_Server
+import Http_App_Server as Http_App_Server 
 from urllib.parse import urlencode
-
-
 
 # mqtt
 import paho.mqtt.subscribe as subscribe

@@ -1,5 +1,5 @@
 
-const path = 'http://localhost:8082/commands';
+const path = 'http://localhost:8083/commands';
 
 $(document).ready(function(){
 	$('[data-toggle="tooltip"]').tooltip();

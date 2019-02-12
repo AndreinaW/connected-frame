@@ -11,7 +11,7 @@ from cgi import parse_header, parse_multipart, parse_qs
 
 PORT_NUMBER = 8082
 filename = 'data'
-commandJsonPath = 'resources/commands.json'
+
 
 #This class will handles any incoming request from
 #the browser 
@@ -33,47 +33,10 @@ class dashboard_service_handler(BaseHTTPRequestHandler):
             self.wfile.write(post_data)
 
 
-        if self.path == '/commands':
-            ctype, pdict = parse_header(self.headers['content-type'])
-
-            if ctype == 'multipart/form-data':
-                postvars = parse_multipart(self.rfile, pdict)
-            elif ctype == 'application/x-www-form-urlencoded':
-                length = int(self.headers['content-length'])
-                dataRead = self.rfile.read(length)
-                postvars = parse_qs(dataRead, keep_blank_values=1)
-
-            print(postvars)
-
-            # send response to client
-            self._set_response()
-            self.wfile.write(dataRead)
-
-            # add new command to json file
-            with open(commandJsonPath) as fjson:    # get json
-                dataJson = json.load(fjson)
-
-            dataJson.update({ postvars["question"][0]: postvars["answer"][0] })     # add new element
-
-            with open(commandJsonPath, 'w') as fjson:   # write on file
-                json.dump(dataJson, fjson)
-
-            print("command added")
-            print("finish processing...")
-
-
     #Handler for the GET requests
     def do_GET(self):
         if self.path=="/":
             self.path="/index.html"
-
-        if self.path == '/commands':
-            self.send_response(200)
-            self.send_header('content-type', 'application/json')
-            self.end_headers()
-            f = open(curdir + sep + commandJsonPath, 'rb')   # get json
-            self.wfile.write(f.read())
-            f.close()
 
         try:
             #Check the file extension required and
@@ -108,37 +71,6 @@ class dashboard_service_handler(BaseHTTPRequestHandler):
 
         except IOError:
             self.send_error(404,'File Not Found: %s' % self.path)
-
-
-
-    def do_DELETE(self):
-        if self.path == '/commands':
-            ctype, pdict = parse_header(self.headers['content-type'])
-
-            if ctype == 'multipart/form-data':
-                postvars = parse_multipart(self.rfile, pdict)
-            elif ctype == 'application/x-www-form-urlencoded':
-                length = int(self.headers['content-length'])
-                dataRead = self.rfile.read(length)
-                postvars = parse_qs(dataRead, keep_blank_values=1)
-
-            print(postvars)
-
-            # send response to client
-            self._set_response()
-            self.wfile.write(dataRead)
-
-            # delete command to json file
-            with open(commandJsonPath) as fjson:    # get json
-                dataJson = json.load(fjson)
-
-            dataJson.pop(postvars["question"][0], None)     # delete element
-
-            with open(commandJsonPath, 'w') as fjson:   # write on file
-                json.dump(dataJson, fjson)
-
-            print("command deleted")
-            print("finish processing...")
 
 
 try:

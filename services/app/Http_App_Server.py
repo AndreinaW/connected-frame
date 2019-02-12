@@ -1,15 +1,6 @@
-#!/usr/bin/python
-import smtplib
-import ssl
-import json
-import os
-import sys
-import requests
 
 # http
-import http.client
-from urllib.parse import urlencode
-from http.server import HTTPServer, BaseHTTPRequestHandler
+from http.server import BaseHTTPRequestHandler
 from urllib.request import Request, urlopen
 
 mime_json = 'application/json'

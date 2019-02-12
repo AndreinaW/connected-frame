@@ -4,4 +4,4 @@
 .iml
 
 # Folder
-services/__pycache__/
+services/app/__pycache__/

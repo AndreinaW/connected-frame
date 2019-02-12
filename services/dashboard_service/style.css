@@ -40,11 +40,8 @@ table.table th:last-child {
     width: 75px;
 }
 table.table tr td:last-child {
-
     text-align: center;
 }
-
-
 table.table tr:nth-child(even) {
     background-color: #eceff5;
 }

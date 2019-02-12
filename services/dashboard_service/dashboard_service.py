@@ -39,14 +39,15 @@ class dashboard_service_handler(BaseHTTPRequestHandler):
             if ctype == 'multipart/form-data':
                 postvars = parse_multipart(self.rfile, pdict)
             elif ctype == 'application/x-www-form-urlencoded':
-                length = int(self.headers.getheader('content-length'))
-                postvars = parse_qs(self.rfile.read(length), keep_blank_values=1)
+                length = int(self.headers['content-length'])
+                dataRead = self.rfile.read(length)
+                postvars = parse_qs(dataRead, keep_blank_values=1)
 
             print(postvars)
 
             # send response to client
             self._set_response()
-            self.wfile.write(postvars)
+            self.wfile.write(dataRead)
 
             # add new command to json file
             with open(commandJsonPath) as fjson:    # get json
@@ -70,9 +71,9 @@ class dashboard_service_handler(BaseHTTPRequestHandler):
             self.send_response(200)
             self.send_header('content-type', 'application/json')
             self.end_headers()
-            with open(commandJsonPath) as fjson:    # get json
-                dataJson = json.dumps(json.load(fjson))
-            self.wfile.write(dataJson)
+            f = open(curdir + sep + commandJsonPath, 'rb')   # get json
+            self.wfile.write(f.read())
+            f.close()
 
         try:
             #Check the file extension required and
@@ -117,12 +118,15 @@ class dashboard_service_handler(BaseHTTPRequestHandler):
             if ctype == 'multipart/form-data':
                 postvars = parse_multipart(self.rfile, pdict)
             elif ctype == 'application/x-www-form-urlencoded':
-                length = int(self.headers.getheader('content-length'))
-                postvars = parse_qs(self.rfile.read(length), keep_blank_values=1)
+                length = int(self.headers['content-length'])
+                dataRead = self.rfile.read(length)
+                postvars = parse_qs(dataRead, keep_blank_values=1)
+
+            print(postvars)
 
             # send response to client
             self._set_response()
-            self.wfile.write(postvars)
+            self.wfile.write(dataRead)
 
             # delete command to json file
             with open(commandJsonPath) as fjson:    # get json

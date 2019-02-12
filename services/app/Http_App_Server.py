@@ -1,8 +1,16 @@
-from http.server import BaseHTTPRequestHandler
-from urllib.parse import urlencode
-from urllib.request import Request, urlopen
+#!/usr/bin/python
+import smtplib
+import ssl
+import json
+import os
+import sys
+import requests
 
-PORT_NUMBER = 8080
+# http
+import http.client
+from urllib.parse import urlencode
+from http.server import HTTPServer, BaseHTTPRequestHandler
+from urllib.request import Request, urlopen
 
 mime_json = 'application/json'
 
@@ -27,25 +35,6 @@ class Http_App_Server(BaseHTTPRequestHandler):
     def send_basic_get_request(self, url, extra_path):
         request = Request(url + extra_path)
         return urlopen(url + extra_path).read()
-
-    # Handler for the POST requests
-    def do_POST(self):
-        if self.path == '/audioFile':
-            content_length = int(self.headers['Content-Length'])
-            post_data = self.rfile.read(content_length)
-
-            # speech to ext job ----------------
-            response = speech.mainSpeechToText(post_data)  # (post_data)
-            if response == None:
-                response = "I don't understand"
-            fileName = text.text_to_speech(response)
-
-            #send file to raspberry pi
-            with open(fileName, 'rb') as data:
-                requests.post('http://176.143.207.186:2222/play_sound', files = {'file1': data} )
-
-            # Send response
-            self._set_response()
 
     # Handler for the GET requests
     def do_GET(self):

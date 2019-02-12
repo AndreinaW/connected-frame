@@ -6,19 +6,22 @@ import os
 import sys
 import requests
 
-
 # http
 import http.client
-from http.server HTTPServer
-import Http_App_Server as Http_App_Server
+from http.server import HTTPServer
+from Http_App_Server import Http_App_Server
+from urllib.parse import urlencode
 
 # mqtt
 import paho.mqtt.subscribe as subscribe
+import paho.mqtt.client as mqtt
 import multiprocessing
 
 #Text to speech
 import speech_to_text as speech
 import text_to_speech as text
+
+PORT_NUMBER = 8080
 
 # Face API constants
 key = 'd369abc5e70741e5993f9e54e362169f'
@@ -44,7 +47,7 @@ face_sample_image = resources_file + 'face_sample.jpg'
 # MQTT Constants
 raspi_mqtt_broker_ip = ''
 raspi_mqtt_broker_port = 1883
-topics = {'sensors/camera', 'sensors/light', 'audio_register'}
+topics = ['sensors/camera', 'sensors/light', 'audio_register']
 
 # Services constants
 url_stats = 'http://localhost:8081'

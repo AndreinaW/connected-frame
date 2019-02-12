@@ -11,7 +11,7 @@ from cgi import parse_header, parse_multipart, parse_qs
 
 PORT_NUMBER = 8082
 filename = 'data'
-commandJsonPath = '../resources/commands.json'
+commandJsonPath = 'resources/commands.json'
 
 #This class will handles any incoming request from
 #the browser 

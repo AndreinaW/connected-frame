@@ -9,4 +9,4 @@ RUN pip3 install --upgrade requests
 
 EXPOSE 8080
 
-CMD ["python", "-u", "app.py"]
+CMD ["python", "-u", "app.py", "192.168.1.125"]

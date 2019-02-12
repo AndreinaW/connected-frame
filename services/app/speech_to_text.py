@@ -8,7 +8,7 @@ import threading
 
 #importing dictionary of form question:response
 #from Dict import dict
-commandJsonPath = '../resources/commands.json'
+commandJsonPath = 'resources/commands.json'
 
 # get commands
 with open(commandJsonPath) as fjson:
@@ -120,7 +120,7 @@ class MyRecognizeCallback(RecognizeCallback):
 
 
 def  mainSpeechToText(fileStream):
-    textRecognized = recognition('test.wav', fileStream)
+    textRecognized = recognition('resources/test.wav', fileStream)
     print(textRecognized)
     listWordsSpeech = retriveWordsSpeech(textRecognized)
     listKeywords = retriveKeyWordsFromFile()
@@ -128,9 +128,6 @@ def  mainSpeechToText(fileStream):
     ifMatched = matchWordsWithKeywords(listWordsSpeech, listKeywords)
     return ifMatched
 
-
-
-mainSpeechToText("hello_world.wav")
 
 
 

@@ -13,7 +13,7 @@ const parityChart = new Chart(ctx, {
     options: {}
 });
 
-const url_parity = 'http://localhost:8080/api/data/parity';
+const url_parity = 'http://192.168.99.100:8080/api/data/parity';
 
 fetch(url_parity)
     .then((resp) => resp.json())

@@ -95,30 +95,7 @@ class myHandler(BaseHTTPRequestHandler):
 
     # Handler for the POST requests
     def do_POST(self):
-        if self.path == '/audioFile':
-
-            # <--- Gets the size of data
-            content_length = int(self.headers['Content-Length'])
-            # <--- Gets the data itself
-            post_data = self.rfile.read(content_length)
-            # print(post_data)
-
-            # speech to ext job ----------------
-            response = speech.mainSpeechToText(post_data)  # (post_data)
-            if response == None:
-                response = "I don't understand"
-            fileName = text.text_to_speech(response)
-
-            # Print and write file's name
-            print(fileName)
-            
-            #send file to raspberry pi
-            with open(fileName, 'rb') as data:
-                requests.post('http://176.143.207.186:2222/play_sound', files = {'file1': data} )
         
-            # Send response
-            self._set_response()
-
         if self.path == '/faces':
             # Read post data
             # <--- Gets the size of data
@@ -179,6 +156,22 @@ def send_basic_post_request(url, content):
     request = Request(url, str.encode(content))
     return urlopen(request).read().decode()
 
+def speech_text(audio_file):
+        # speech to ext job ----------------
+        response = speech.mainSpeechToText(audio_file)  # (post_data)
+        if response == None:
+            response = "I don't understand"
+            fileName = text.text_to_speech(response)
+            
+            # Print and write file's name
+            print(fileName)
+            
+            #send file to raspberry pi
+            with open(fileName, 'rb') as data:
+                requests.post('http://176.143.207.186:2222/play_sound', files = {'file1': data} )
+            
+            # Send response
+            self._set_response()
 
 def face_api(data):
     # Send post data to Face API
@@ -227,6 +220,10 @@ def on_message_received(client, userdata, message):
     elif message.topic == topics[1]:
         print('%s %s' % (message.topic, message.payload))
         send_alarm()
+    elif message.topic == topics[2]:
+        print('Speech to text - text to speech ' + message.topic)
+        speech_text(message.payload)
+
 
 
 client = mqtt.Client('Frameplus Client')
@@ -234,7 +231,7 @@ client.on_message = on_message_received
 client.connect(raspi_mqtt_broker_ip, port=raspi_mqtt_broker_port)
 print('Subscribing to %s:%i on topics: ' % (raspi_mqtt_broker_ip, raspi_mqtt_broker_port))
 print(*topics, sep=', ')
-client.subscribe([(topics[0], 0), (topics[1], 0)])
+client.subscribe([(topics[0], 0), (topics[1], 0), (topics[2], 0))
 
 # Execution starts here
 try:

@@ -18,8 +18,8 @@ import paho.mqtt.client as mqtt
 import multiprocessing
 
 #Text to speech
-import speech_to_text as speech
-import text_to_speech as text
+from speech_text import speech_to_text as speech
+from speech_text import text_to_speech as text
 
 PORT_NUMBER = 8080
 
@@ -88,7 +88,6 @@ def face_api(data):
     # Send data through statistics then dashboard services
     send_basic_post_request(url_stats, data)
 
-
 def send_alarm():
     SSL_PORT = 465
     SMTP_GMAIL_SERVER = 'smtp.gmail.com'
@@ -96,18 +95,18 @@ def send_alarm():
     GMAIL_ACCOUNT = 'ocs.frameplus@gmail.com'
     GMAIL_PASSWORD = 'frameplus1819'
 
-   sender_email = GMAIL_ACCOUNT
-   receiver_email = GMAIL_ACCOUNT
-   subject = 'Frameplus Camera Alert'
-   text = 'The camera is obstructed!'
-   message = 'Subject: {}\n\n{}'.format(subject, text)
+    sender_email = GMAIL_ACCOUNT
+    receiver_email = GMAIL_ACCOUNT
+    subject = 'Frameplus Camera Alert'
+    text = 'The camera is obstructed!'
+    message = 'Subject: {}\n\n{}'.format(subject, text)
 
-   # Create a secure SSL context
-   context = ssl.create_default_context()
+    # Create a secure SSL context
+    context = ssl.create_default_context()
 
-   with smtplib.SMTP_SSL(SMTP_GMAIL_SERVER, SSL_PORT, context=context) as smtp_server:
-       smtp_server.login(GMAIL_ACCOUNT, GMAIL_PASSWORD)
-       smtp_server.sendmail(sender_email, receiver_email, message)
+    with smtplib.SMTP_SSL(SMTP_GMAIL_SERVER, SSL_PORT, context=context) as smtp_server:
+        smtp_server.login(GMAIL_ACCOUNT, GMAIL_PASSWORD)
+        smtp_server.sendmail(sender_email, receiver_email, message)
 
 
 def on_message_received(client, userdata, message):

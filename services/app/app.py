@@ -56,18 +56,19 @@ raspberry_pi_url = ''
 raspberry_pi_url_extension = '/audioResponse'
 
 def speech_text(audio_file):
-        # speech to ext job ----------------
-        response = speech.mainSpeechToText(audio_file)  # (post_data)
-        if response == None:
-            response = "I don't understand"
-            fileName = text.text_to_speech(response)
+    # speech to ext job ----------------
+    response = speech.mainSpeechToText(audio_file)  # (post_data)
+    if response == None:
+        response = "I don't understand"
 
-            # Print and write file's name
-            print(fileName)
+    fileName = text.text_to_speech(response)
 
-            #send file to raspberry pi
-            with open(fileName, 'rb') as data:
-                requests.post('http://176.143.207.186:2222/play_sound', files = {'file1': data} )
+    # Print and write file's name
+    print(fileName)
+
+    #send file to raspberry pi
+    with open(fileName, 'rb') as data:
+        requests.post('http://176.143.207.186:2222/play_sound', files = {'file1': data} )
 
 
 def face_api(data):
@@ -89,24 +90,24 @@ def face_api(data):
 
 
 def send_alarm():
-        SSL_PORT = 465
-        SMTP_GMAIL_SERVER = 'smtp.gmail.com'
+    SSL_PORT = 465
+    SMTP_GMAIL_SERVER = 'smtp.gmail.com'
 
-        GMAIL_ACCOUNT = 'ocs.frameplus@gmail.com'
-        GMAIL_PASSWORD = 'frameplus1819'
+    GMAIL_ACCOUNT = 'ocs.frameplus@gmail.com'
+    GMAIL_PASSWORD = 'frameplus1819'
 
-        sender_email = GMAIL_ACCOUNT
-        receiver_email = GMAIL_ACCOUNT
-        subject = 'Frameplus Camera Alert'
-        text = 'The camera is obstructed!'
-        message = 'Subject: {}\n\n{}'.format(subject, text)
+   sender_email = GMAIL_ACCOUNT
+   receiver_email = GMAIL_ACCOUNT
+   subject = 'Frameplus Camera Alert'
+   text = 'The camera is obstructed!'
+   message = 'Subject: {}\n\n{}'.format(subject, text)
 
-        # Create a secure SSL context
-        context = ssl.create_default_context()
+   # Create a secure SSL context
+   context = ssl.create_default_context()
 
-        with smtplib.SMTP_SSL(SMTP_GMAIL_SERVER, SSL_PORT, context=context) as smtp_server:
-            smtp_server.login(GMAIL_ACCOUNT, GMAIL_PASSWORD)
-            smtp_server.sendmail(sender_email, receiver_email, message)
+   with smtplib.SMTP_SSL(SMTP_GMAIL_SERVER, SSL_PORT, context=context) as smtp_server:
+       smtp_server.login(GMAIL_ACCOUNT, GMAIL_PASSWORD)
+       smtp_server.sendmail(sender_email, receiver_email, message)
 
 
 def on_message_received(client, userdata, message):

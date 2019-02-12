@@ -7,16 +7,17 @@ from watson_developer_cloud.websocket import RecognizeCallback, AudioSource
 import threading
 
 #importing dictionary of form question:response
-from Dict import dict
+#from Dict import dict
+commandJsonPath = '../resources/commands.json'
+
+# get commands
+with open(commandJsonPath) as fjson:
+    dict = json.load(fjson)
 
 
-
-# If service instance provides API key authentication
 service = SpeechToTextV1(
-#     ## url is optional, and defaults to the URL below. Use the correct URL for your region.
-url='https://gateway-lon.watsonplatform.net/speech-to-text/api',
-iam_apikey='57ZvOyql78xGGdNlwd3BBHlio9wm5_ldItfG1kpFw3sa')
-
+    url='https://gateway-lon.watsonplatform.net/speech-to-text/api',
+    iam_apikey='57ZvOyql78xGGdNlwd3BBHlio9wm5_ldItfG1kpFw3sa')
 
 
 def recognition(path, fileStream):
@@ -129,7 +130,7 @@ def  mainSpeechToText(fileStream):
 
 
 
-#mainSpeechToText("blabla")
+#mainSpeechToText("hello_world.wav")
 
 
 

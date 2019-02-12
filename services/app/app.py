@@ -38,14 +38,14 @@ mime_octet_stream = 'application/octet-stream'
 face_api_url = 'westeurope.api.cognitive.microsoft.com'
 face_api_url_extension = '/face/v1.0/detect?%s'
 face_api_headers = {'Content-Type': mime_octet_stream,
-                    'Ocp-Apim-Subscription-Key': key}
+    'Ocp-Apim-Subscription-Key': key}
 raspberry_pi_headers = {'Content-Type': mime_octet_stream}
 
 params = urlencode({
-    'returnFaceId': 'true',
-    'returnFaceLandmarks': 'false',
-    'returnFaceAttributes': 'age,gender,smile,headPose,emotion,exposure'
-})
+                   'returnFaceId': 'true',
+                   'returnFaceLandmarks': 'false',
+                   'returnFaceAttributes': 'age,gender,smile,headPose,emotion,exposure'
+                   })
 
 resources_file = 'resources/'
 filename = resources_file + 'data'
@@ -218,7 +218,7 @@ client.on_message = on_message_received
 client.connect(raspi_mqtt_broker_ip, port=raspi_mqtt_broker_port)
 print('Subscribing to %s:%i on topics: ' % (raspi_mqtt_broker_ip, raspi_mqtt_broker_port))
 print(*topics, sep=', ')
-client.subscribe([(topics[0], 0), (topics[1], 0), (topics[2], 0))
+client.subscribe([(topics[0], 0), (topics[1], 0), (topics[2], 0)])
 
 # Execution starts here
 try:

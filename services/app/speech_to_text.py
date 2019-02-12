@@ -130,7 +130,7 @@ def  mainSpeechToText(fileStream):
 
 
 
-mainSpeechToText("hello_world.wav")
+#mainSpeechToText("hello_world.wav")
 
 
 

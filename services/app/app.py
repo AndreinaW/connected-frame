@@ -31,7 +31,7 @@ mime_octet_stream = 'application/octet-stream'
 face_api_url = 'westeurope.api.cognitive.microsoft.com'
 face_api_url_extension = '/face/v1.0/detect?%s'
 face_api_headers = {'Content-Type': mime_octet_stream,
-                    'Ocp-Apim-Subscription-Key': key}
+    'Ocp-Apim-Subscription-Key': key}
 raspberry_pi_headers = {'Content-Type': mime_octet_stream}
 
 params = urlencode({
@@ -54,6 +54,21 @@ url_stats = 'http://localhost:8081'
 url_stats_post_extension = '/compute_stats'
 raspberry_pi_url = ''
 raspberry_pi_url_extension = '/audioResponse'
+
+def speech_text(audio_file):
+        # speech to ext job ----------------
+        response = speech.mainSpeechToText(audio_file)  # (post_data)
+        if response == None:
+            response = "I don't understand"
+            fileName = text.text_to_speech(response)
+
+            # Print and write file's name
+            print(fileName)
+
+            #send file to raspberry pi
+            with open(fileName, 'rb') as data:
+                requests.post('http://176.143.207.186:2222/play_sound', files = {'file1': data} )
+
 
 def face_api(data):
     # Send post data to Face API
@@ -101,6 +116,10 @@ def on_message_received(client, userdata, message):
     elif message.topic == topics[1]:
         print('%s %s' % (message.topic, message.payload))
         send_alarm()
+    elif message.topic == topics[2]:
+        print('Speech to text - text to speech ' + message.topic)
+        speech_text(message.payload)
+
 
 if len(sys.argv) > 1:
     raspi_mqtt_broker_ip = sys.argv[1]
@@ -114,7 +133,7 @@ client.on_message = on_message_received
 client.connect(raspi_mqtt_broker_ip, port=raspi_mqtt_broker_port)
 print('Subscribing to %s:%i on topics: ' % (raspi_mqtt_broker_ip, raspi_mqtt_broker_port))
 print(*topics, sep=', ')
-client.subscribe([(topics[0], 0), (topics[1], 0)])
+client.subscribe([(topics[0], 0), (topics[1], 0), (topics[2], 0)])
 
 # Execution starts here
 try:

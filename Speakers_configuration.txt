@@ -29,7 +29,8 @@ Bluetoothctl utility to set up Bluetooth connections between computers and Rasp
 
 sudo bluetoothctl
 agent on
-default-agent
+default-ag
+ent
 scan on (to find the bd adresse of the device, once it’s found —> scan off)
 pair FC:58:FA:12:01:62
 connect FC:58:FA:12:01:62
@@ -57,5 +58,6 @@ arecord -l
 
 
 
+Show ip of rasp : ip a
 
 

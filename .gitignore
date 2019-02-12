@@ -1,2 +1,7 @@
+# IDE Files / Folder
+.vs
+.idea
+.iml
 
-\.idea/
+# Folder
+services/__pycache__/

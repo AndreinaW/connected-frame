@@ -6,17 +6,6 @@ import os
 import sys
 import requests
 
-# http
-import http.client
-import base64
-from http.server import BaseHTTPRequestHandler, HTTPServer
-from urllib.parse import urlencode
-from urllib.request import Request, urlopen
-
-# mqtt
-import paho.mqtt.subscribe as subscribe
-import multiprocessing
-
 # os.chdir('/Users/asia/Desktop/connected-frame/speech')
 # print(sys.path)
 #import speech
@@ -24,30 +13,33 @@ import multiprocessing
 # file=open('speech'.join(path,'speech'))
 # sys.path.append('/Users/asia/Desktop/connected-frame/speech-to-text_IBM')
 #from .. import speech
-
+# sys.path.append('/Users/asia/Desktop/connected-frame/speech-to-text_IBM')
 #sys.path.insert(0, '/Users/asia/Desktop/connected-frame/services')
 
-#try:
+
+# http
+import http.client
+from http.server HTTPServer
+import Http_App_Server as Http_App_Server
+
+# mqtt
+import paho.mqtt.subscribe as subscribe
+import multiprocessing
+
+#Text to speech
 import speech_to_text as speech
 import text_to_speech as text
-
-# except ImportError:
-#    print('No Import')
-##imp.load_dynamic('Speech', '/Users/asia/Desktop/connected-frame/speech-to-text_IBM')
-
-PORT_NUMBER = 8080
-filename = 'data'
 
 # Face API constants
 key = 'd369abc5e70741e5993f9e54e362169f'
 
 mime_octet_stream = 'application/octet-stream'
-mime_json = 'application/json'
 
 face_api_url = 'westeurope.api.cognitive.microsoft.com'
 face_api_url_extension = '/face/v1.0/detect?%s'
 face_api_headers = {'Content-Type': mime_octet_stream,
                     'Ocp-Apim-Subscription-Key': key}
+raspberry_pi_headers = {'Content-Type': mime_octet_stream}
 
 params = urlencode({
     'returnFaceId': 'true',
@@ -55,28 +47,16 @@ params = urlencode({
     'returnFaceAttributes': 'age,gender,smile,headPose,emotion,exposure'
 })
 
-face_sample_image = 'face_sample.jpg'
+resources_file = 'resources/'
+filename = resources_file + 'data'
+face_sample_image = resources_file + 'face_sample.jpg'
 
 # MQTT Constants
 raspi_mqtt_broker_ip = ''
 raspi_mqtt_broker_port = 1883
 topics = {'sensors/camera', 'sensors/light', 'audio_register'}
 
-if len(sys.argv) > 1:
-    raspi_mqtt_broker_ip = sys.argv[1]
-    if len(sys.argv) > 2:
-        raspi_mqtt_broker_port = int(sys.argv[2])
-else:
-    sys.exit('Usage: python <program_name>.py [Required: mqtt_broker_ip] [Optional: mqtt_broker_port (Default = 1883)]')
-
-raspberry_pi_url = ''
-raspberry_pi_url_extension = '/audioResponse'
-raspberry_pi_headers = {'Content-Type': mime_octet_stream}
-
 # Services constants
-url_stats = 'stats:8081/compute_stats'
-url_dashboard = 'dashboard:8082/add_data'
-
 url_stats = 'http://localhost:8081'
 url_stats_post_extension = '/compute_stats'
 url_dashboard = 'http://localhost:8082/add_data'
@@ -173,6 +153,8 @@ def speech_text(audio_file):
             # Send response
             self._set_response()
 
+
+
 def face_api(data):
     # Send post data to Face API
     conn = http.client.HTTPSConnection(face_api_url)
@@ -188,8 +170,7 @@ def face_api(data):
         file.write(data + '\n')
 
     # Send data through statistics then dashboard services
-    basic_stats = send_basic_post_request(url_stats, data)
-    send_basic_post_request(url_dashboard, basic_stats)
+    send_basic_post_request(url_stats, data)
 
 
 def send_alarm():
@@ -225,6 +206,12 @@ def on_message_received(client, userdata, message):
         speech_text(message.payload)
 
 
+if len(sys.argv) > 1:
+    raspi_mqtt_broker_ip = sys.argv[1]
+    if len(sys.argv) > 2:
+        raspi_mqtt_broker_port = int(sys.argv[2])
+else:
+    sys.exit('Usage: python <program_name>.py [Required: mqtt_broker_ip] [Optional: mqtt_broker_port (Default = 1883)]')
 
 client = mqtt.Client('Frameplus Client')
 client.on_message = on_message_received
@@ -239,7 +226,7 @@ try:
 
     # Create a web server and define the handler to manage the
     # incoming request
-    server = HTTPServer(('', PORT_NUMBER), myHandler)
+    server = HTTPServer(('', PORT_NUMBER), Http_App_Server)
     print('Started httpserver on port ' + str(PORT_NUMBER))
 
     # Wait forever for incoming http requests

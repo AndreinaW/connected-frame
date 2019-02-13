@@ -53,6 +53,9 @@ class dashboard_service_handler(BaseHTTPRequestHandler):
 
     #Handler for the GET requests
     def do_GET(self):
+        if self.path=="/":
+            self.path="/index.html"
+
         if self.path == '/commands':
             self.send_response(200)
             self.send_header('content-type', 'application/json')

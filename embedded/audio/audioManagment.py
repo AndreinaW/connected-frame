@@ -29,12 +29,12 @@ duration = "5"
 adresse_mac_speakers = "78:44:05:DA:56:65"
 welcome_audio = "./resources/welcome.wav"
 beep_audio = "./resources/ding.wav"
-audio_recorded = "./recordings/audio_recorded.wav"
+#audio_recorded = "./recordings/audio_recorded.wav"
 
 
-def record_audio():
+#def record_audio():
     # with .call if there is an error while executing the command; It won't make an exception and stop executing the .py
-    subprocess.call(['arecord', '-f', 'cd', '-d', duration, audio_recorded])
+#    subprocess.call(['arecord', '-f', 'cd', '-d', duration, audio_recorded])
 
 
 def play_audio(audio_path):
@@ -70,7 +70,8 @@ def audio_rec_callback(fname):
     if play_is_success:
         print("publish to topic")
         #************* mqtt *************
-        local_data = open(audio_recorded, 'rb').read()
+        #local_data = open(audio_recorded, 'rb').read()
+        local_data = open(fname, 'rb').read()
         client.publish(topic, payload=local_data, qos=0, retain=False)
         #************* mqtt *************
 

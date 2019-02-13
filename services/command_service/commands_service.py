@@ -31,21 +31,22 @@ class commands_service_handler(BaseHTTPRequestHandler):
                 length = int(self.headers['content-length'])
                 dataRead = self.rfile.read(length)
                 postvars = parse_qs(dataRead, keep_blank_values=1)
+        
+            with open(commandJsonPath) as fjson:    # get json
+                dataJson = json.load(fjson)
 
-            print(postvars)
+            key_dict = postvars[b'question'][0].decode("utf-8")
+            value_dict = postvars[b'answer'][0].decode("utf-8")
+
+            #add question/response to dict
+            dataJson[key_dict] = value_dict
+                
+            with open(commandJsonPath, 'w') as fjson:   # write on file
+                    json.dump(dataJson, fjson)
 
             # send response to client
             self._set_response()
             self.wfile.write(dataRead)
-
-            # add new command to json file
-            with open(commandJsonPath) as fjson:    # get json
-                dataJson = json.load(fjson)
-
-            dataJson.update({ postvars["question"][0]: postvars["answer"][0] })     # add new element
-
-            with open(commandJsonPath, 'w') as fjson:   # write on file
-                json.dump(dataJson, fjson)
 
             print("command added")
             print("finish processing...")
@@ -111,8 +112,6 @@ class commands_service_handler(BaseHTTPRequestHandler):
                 dataRead = self.rfile.read(length)
                 postvars = parse_qs(dataRead, keep_blank_values=1)
 
-            print(postvars)
-
             # send response to client
             self._set_response()
             self.wfile.write(dataRead)
@@ -120,8 +119,11 @@ class commands_service_handler(BaseHTTPRequestHandler):
             # delete command to json file
             with open(commandJsonPath) as fjson:    # get json
                 dataJson = json.load(fjson)
+            
+            key_dict = postvars[b'question'][0].decode("utf-8")
+            print("key_dict  " + str(key_dict))
 
-            dataJson.pop(postvars["question"][0], None)     # delete element
+            del dataJson[key_dict]
 
             with open(commandJsonPath, 'w') as fjson:   # write on file
                 json.dump(dataJson, fjson)

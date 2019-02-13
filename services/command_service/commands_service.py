@@ -11,7 +11,7 @@ commandJsonPath = './commands.json'
 
 #This class will handles any incoming request from
 #the browser 
-class dashboard_service_handler(BaseHTTPRequestHandler):
+class commands_service_handler(BaseHTTPRequestHandler):
 
     def _set_response(self):
         self.send_response(200)
@@ -57,12 +57,7 @@ class dashboard_service_handler(BaseHTTPRequestHandler):
             self.path="/index.html"
 
         if self.path == '/commands':
-            self.send_response(200)
-            self.send_header('content-type', 'application/json')
-            self.end_headers()
-            f = open(curdir + sep + commandJsonPath, 'rb')   # get json
-            self.wfile.write(f.read())
-            f.close()
+            self.path = commandJsonPath
 
         try:
             #Check the file extension required and
@@ -84,12 +79,15 @@ class dashboard_service_handler(BaseHTTPRequestHandler):
             if self.path.endswith(".css"):
                 mimetype='text/css'
                 sendReply = True
+            if self.path.endswith(".json"):
+                mimetype='aplication/json'
+                sendReply = True
 
             if sendReply == True:
                 #Open the static file requested and send it
                 f = open(curdir + sep + self.path, 'rb')
                 self.send_response(200)
-                self.send_header('Content-type',mimetype)
+                self.send_header('content-type',mimetype)
                 self.end_headers()
                 self.wfile.write(f.read())
                 f.close()
@@ -97,6 +95,8 @@ class dashboard_service_handler(BaseHTTPRequestHandler):
 
         except IOError:
             self.send_error(404,'File Not Found: %s' % self.path)
+
+        print("finish processing...")
 
 
 
@@ -133,7 +133,7 @@ class dashboard_service_handler(BaseHTTPRequestHandler):
 try:
     #Create a web server and define the handler to manage the
     #incoming request
-    server = HTTPServer(('', PORT_NUMBER), dashboard_service_handler)
+    server = HTTPServer(('', PORT_NUMBER), commands_service_handler)
     print ('Started httpserver on port ' + str(PORT_NUMBER))
 
     #Wait forever for incoming htto requests

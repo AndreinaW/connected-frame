@@ -11,7 +11,7 @@ mosquitto_mqtt_broker_ip = 'localhost'
 mosquitto_mqtt_broker_port = '1883'
 
 mosquitto_mqtt_broker_url = mosquitto_mqtt_broker_ip + ':' + mosquitto_mqtt_broker_port
-topic = 'audio_registered'
+topic = 'audio/register'
 
 
 print('Mosquitto MQTT Broker url: ' + mosquitto_mqtt_broker_url)
@@ -76,6 +76,7 @@ def audio_rec_callback(fname):
         #************* mqtt *************
 
     play_is_success = True
+    print('Listening... Press Ctrl+C to exit')
 
 
 def detected_callback():

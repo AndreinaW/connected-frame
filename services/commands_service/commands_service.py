@@ -1,7 +1,10 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 from http.server import BaseHTTPRequestHandler,HTTPServer
 from os import curdir, sep
 import json
+import re
 from cgi import parse_header, parse_multipart, parse_qs
 
 
@@ -47,9 +50,25 @@ class commands_service_handler(BaseHTTPRequestHandler):
             # send response to client
             self._set_response()
             self.wfile.write(dataRead)
-
             print("command added")
             print("finish processing...")
+
+
+
+        if self.path == '/commands/match':
+            content_length = int(self.headers['Content-Length']) # <--- Gets the size of data
+            post_data = self.rfile.read(content_length).decode("utf-8") # <--- Gets the data itself
+
+            # check if there is a match
+            listWordsSpeech = self.retriveWordsSpeech(post_data)
+            listKeywords = self.retriveKeyWordsFromFile()
+            match = self.matchWordsWithKeywords(listWordsSpeech, listKeywords)
+
+            self._set_response()
+            self.wfile.write(str.encode(match))
+            print("command matched")
+            print("finish processing...")
+
 
 
     #Handler for the GET requests
@@ -130,6 +149,37 @@ class commands_service_handler(BaseHTTPRequestHandler):
 
             print("command deleted")
             print("finish processing...")
+
+
+
+    # retrive words from user's speech -> in form of list of words
+    def retriveWordsSpeech(self, textRecognized):
+        keyWords = re.findall("[a-z]+", textRecognized)
+        # res = []
+        # for el in keyWords:
+        #     res.append(el[1:-1])
+        # res = res[4:]
+        print("Retrive words from user's speech : " )
+        print(keyWords)
+        return keyWords
+
+    #retrive the keywords(questions) from the file containing dictionary of form question:response
+    def retriveKeyWordsFromFile(self):
+        with open(commandJsonPath) as fjson:    # get list of keywords and their response
+            listKeywordResponse = json.load(fjson)
+            listKeywordResponse = {k.lower():v for k,v in listKeywordResponse.items()}
+        return listKeywordResponse
+
+    # match if user's speech corresponds to any keyword in dictionary
+    def matchWordsWithKeywords(self, listWords, listKeywordResponse):
+        for w in listWords:
+            word = w.lower()
+            if word in listKeywordResponse:
+                print("Found matching for sentence : " + word)
+                print("The response from speech to text : " + listKeywordResponse[word])
+                return listKeywordResponse[word]
+        print("Matching not found ! ")
+        return "None"
 
 
 try:

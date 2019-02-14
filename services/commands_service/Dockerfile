@@ -5,4 +5,4 @@ WORKDIR /app
 
 EXPOSE 8083
 
-CMD ["python", "-u", "command_service"]
+CMD ["python", "-u", "commands_service.py"]

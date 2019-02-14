@@ -17,9 +17,8 @@ import paho.mqtt.subscribe as subscribe
 import paho.mqtt.client as mqtt
 import multiprocessing
 
-#Text to speech
-from speech_text import speech_to_text as speech
-from speech_text import text_to_speech as text
+# Speech to Text - Text to speech
+from watson_developer_cloud import TextToSpeechV1, SpeechToTextV1
 
 PORT_NUMBER = 8080
 
@@ -47,7 +46,7 @@ face_sample_image = resources_file + 'face_sample.jpg'
 # MQTT Constants
 raspi_mqtt_broker_ip = ''
 raspi_mqtt_broker_port = 1883
-topics = ['sensors/camera', 'sensors/light', 'audio_register']
+topics = ['sensors/camera', 'sensors/light', 'audio/register']
 
 # Services constants
 url_stats = 'http://localhost:8081'
@@ -55,20 +54,48 @@ url_stats_post_extension = '/compute_stats'
 raspberry_pi_url = ''
 raspberry_pi_url_extension = '/audioResponse'
 
+url_match_commands = 'http://localhost:8083/commands/match'
+audio_created = './recordings/text_to_speech.wav'
+url_node_red = 'http://192.168.43.108:1880/play_sound'
+
+serviceSpeechToText = SpeechToTextV1(
+    url='https://gateway-lon.watsonplatform.net/speech-to-text/api',
+    iam_apikey='57ZvOyql78xGGdNlwd3BBHlio9wm5_ldItfG1kpFw3sa')
+
+serviceTextToSpeech = TextToSpeechV1(
+    url='https://gateway-lon.watsonplatform.net/text-to-speech/api',
+    iam_apikey='GEvciTdhYRXXAHnXE2HiR9RLADcbgiC2Eq61-hn0VOwe')
+
+
+
 def speech_text(audio_file):
-    # speech to ext job ----------------
-    response = speech.mainSpeechToText(audio_file)  # (post_data)
-    if response == None:
-        response = "I don't understand"
+    # speech to text
+    recognized = serviceSpeechToText.recognize(audio=audio_file,
+                                    content_type='application/octet-stream',
+                                    timestamps=True,
+                                    word_confidence=True).get_result()
+    textRecognized = json.dumps(recognized)
 
-    fileName = text.text_to_speech(response)
+    print("recognized... now matching ")
 
-    # Print and write file's name
-    print(fileName)
+    # match words
+    response = requests.post(url_match_commands, textRecognized)
 
-    #send file to raspberry pi
-    with open(fileName, 'rb') as data:
-        requests.post('http://176.143.207.186:2222/play_sound', files = {'file1': data} )
+    print("matched... now waiting response ")
+
+    if response.text == "None":
+        print("I don't understand")
+    else:
+        print("sending text to speech...")
+        print(response.text)
+        with open(audio_created, 'wb') as audio_file:
+            res = serviceTextToSpeech.synthesize(response.text, accept='audio/wav', voice="en-US_AllisonVoice").get_result()
+            audio_file.write(res.content)
+
+        # send file to raspberry pi
+        print("send back to arduino...")
+        with open(audio_created, 'rb') as data:
+            requests.post(url_node_red, files = {'file1': data} )
 
 
 def face_api(data):

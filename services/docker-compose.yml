@@ -34,3 +34,12 @@ services:
     - "8082:8082"
     expose:
     - "8082"
+
+  commands:
+    container_name: commands
+    build:
+      context: ./commands_service
+    ports:
+    - "8083:8083"
+    expose:
+    - "8083"

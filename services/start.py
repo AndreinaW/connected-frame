@@ -11,7 +11,8 @@ mainDir = 'services/'
 mApplication = 'app/'
 mStatisticsService = 'statistics_service/'
 mDashboardService = 'dashboard_service/'
-directories = [mainDir, mApplication, mStatisticsService, mDashboardService]
+mCommandsService = 'dashboard_service/'
+directories = [mainDir, mApplication, mStatisticsService, mDashboardService, mCommandsService]
 
 # Files
 compileScript = 'CompileScript.py'
@@ -49,3 +50,6 @@ executeCommand('python3 ' + 'statistics_service.py')
 changeDirectory('..')
 changeDirectory(mDashboardService)
 executeCommand('python3 ' + 'dashboard_service.py')
+changeDirectory('..')
+changeDirectory(mCommandsService)
+executeCommand('python3 ' + 'commands_service.py')

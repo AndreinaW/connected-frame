@@ -56,6 +56,7 @@ raspberry_pi_url_extension = '/audioResponse'
 
 url_match_commands = 'http://localhost:8083/commands/match'
 audio_created = './recordings/text_to_speech.wav'
+repeat_question = './resources/repeatQuestion.wav'
 url_node_red = 'http://192.168.43.108:1880/play_sound'
 
 serviceSpeechToText = SpeechToTextV1(
@@ -68,34 +69,38 @@ serviceTextToSpeech = TextToSpeechV1(
 
 
 
+
 def speech_text(audio_file):
     # speech to text
-    recognized = serviceSpeechToText.recognize(audio=audio_file,
+    result = serviceSpeechToText.recognize( audio=audio_file,
                                     content_type='application/octet-stream',
                                     timestamps=True,
                                     word_confidence=True).get_result()
-    textRecognized = json.dumps(recognized)
-
-    print("recognized... now matching ")
+    textRecognized = result['results'][0]['alternatives'][0]['transcript']      # extract recognized text from results
+    print("Text recognized: \n" + textRecognized + "\n\nNow matching...\n")
 
     # match words
-    response = requests.post(url_match_commands, textRecognized)
+    textToBeAudio = requests.post(url_match_commands, textRecognized).text
+    print("Words Matched... text received: \n" + textToBeAudio + "\n")
 
-    print("matched... now waiting response ")
-
-    if response.text == "None":
+    if textToBeAudio == "None":
+        pathAudio = repeat_question;
         print("I don't understand")
     else:
-        print("sending text to speech...")
-        print(response.text)
-        with open(audio_created, 'wb') as audio_file:
-            res = serviceTextToSpeech.synthesize(response.text, accept='audio/wav', voice="en-US_AllisonVoice").get_result()
+        pathAudio = audio_created
+
+        print("Sending text to TextToSpeech service...")
+        with open(pathAudio, 'wb') as audio_file:
+            res = serviceTextToSpeech.synthesize(textToBeAudio, accept='audio/wav', voice="en-US_AllisonVoice").get_result()
             audio_file.write(res.content)
 
-        # send file to raspberry pi
-        print("send back to arduino...")
-        with open(audio_created, 'rb') as data:
-            requests.post(url_node_red, files = {'file1': data} )
+    # send file to raspberry pi
+    print("Sending audio generated to raspberry...")
+    with open(pathAudio, 'rb') as data:
+        requests.post(url_node_red, files = {'file1': data} )
+
+    print("Finish processing...")
+
 
 
 def face_api(data):
@@ -144,7 +149,7 @@ def on_message_received(client, userdata, message):
         print('%s %s' % (message.topic, message.payload))
         send_alarm()
     elif message.topic == topics[2]:
-        print('Speech to text - text to speech ' + message.topic)
+        print('\n\n\n\nSpeech to text - text to speech ' + message.topic)
         speech_text(message.payload)
 
 

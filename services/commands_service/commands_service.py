@@ -57,15 +57,16 @@ class commands_service_handler(BaseHTTPRequestHandler):
 
         if self.path == '/commands/match':
             content_length = int(self.headers['Content-Length']) # <--- Gets the size of data
-            post_data = self.rfile.read(content_length).decode("utf-8") # <--- Gets the data itself
+            textToBeMatched = self.rfile.read(content_length).decode("utf-8") # <--- Gets the data itself
+
+            print("\n\n\n\nText received (to be matched): \n" + textToBeMatched + "\n")
 
             # check if there is a match
-            listWordsSpeech = self.retriveWordsSpeech(post_data)
-            listKeywords = self.retriveKeyWordsFromFile()
-            match = self.matchWordsWithKeywords(listWordsSpeech, listKeywords)
+            listQuestionResponse = self.loadQuestionsFromFile()
+            matchResponse = self.matchQuestionWithText(listQuestionResponse, textToBeMatched)
 
             self._set_response()
-            self.wfile.write(str.encode(match))
+            self.wfile.write(str.encode(matchResponse))
             print("command matched")
             print("finish processing...")
 
@@ -152,32 +153,31 @@ class commands_service_handler(BaseHTTPRequestHandler):
 
 
 
-    # retrive words from user's speech -> in form of list of words
-    def retriveWordsSpeech(self, textRecognized):
-        keyWords = re.findall("[a-z]+", textRecognized)
-        # res = []
-        # for el in keyWords:
-        #     res.append(el[1:-1])
-        # res = res[4:]
-        print("Retrive words from user's speech : " )
-        print(keyWords)
-        return keyWords
-
-    #retrive the keywords(questions) from the file containing dictionary of form question:response
-    def retriveKeyWordsFromFile(self):
+    # load questions from the .json file
+    def loadQuestionsFromFile(self):
         with open(commandJsonPath) as fjson:    # get list of keywords and their response
-            listKeywordResponse = json.load(fjson)
-            listKeywordResponse = {k.lower():v for k,v in listKeywordResponse.items()}
-        return listKeywordResponse
+            listQuestionResponse = json.load(fjson)
+        print("Questions in .json: ")
+        print(listQuestionResponse)
+        return listQuestionResponse
 
-    # match if user's speech corresponds to any keyword in dictionary
-    def matchWordsWithKeywords(self, listWords, listKeywordResponse):
-        for w in listWords:
-            word = w.lower()
-            if word in listKeywordResponse:
-                print("Found matching for sentence : " + word)
-                print("The response from speech to text : " + listKeywordResponse[word])
-                return listKeywordResponse[word]
+
+    # match questions to user's text
+    def matchQuestionWithText(self, listQuestionResponse, text):
+        # lower case text and questions
+        text = text.lower()
+        listQuestionResponse = {k.lower():v for k,v in listQuestionResponse.items()}
+
+        for question in listQuestionResponse:
+            print("\nquestion in json: " + question)
+
+            if question not in text:
+                print("question is not in text" )
+            else:
+                print("Found matching for question: " + question)
+                print("The response is: " + listQuestionResponse[question])
+                return listQuestionResponse[question]
+
         print("Matching not found ! ")
         return "None"
 

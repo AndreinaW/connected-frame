@@ -76,15 +76,21 @@ def speech_text(audio_file):
                                     content_type='application/octet-stream',
                                     timestamps=True,
                                     word_confidence=True).get_result()
-    textRecognized = result['results'][0]['alternatives'][0]['transcript']      # extract recognized text from results
-    print("Text recognized: \n" + textRecognized + "\n\nNow matching...\n")
 
-    # match words
-    textToBeAudio = requests.post(url_match_commands, textRecognized).text
-    print("Words Matched... text received: \n" + textToBeAudio + "\n")
+    if(len(result['results']) != 0):
+        textRecognized = result['results'][0]['alternatives'][0]['transcript']      # extract recognized text from results
+        print("Text recognized: \n" + textRecognized + "\n\nNow matching...\n")
+
+        # match words
+        textToBeAudio = requests.post(url_match_commands, textRecognized).text
+        print("Words Matched... text received: \n" + textToBeAudio + "\n")
+    else:
+        textToBeAudio = "None"
+        print("There was NO text recognize\n")
+
 
     if textToBeAudio == "None":
-        pathAudio = repeat_question;
+        pathAudio = repeat_question
         print("I don't understand")
     else:
         pathAudio = audio_created

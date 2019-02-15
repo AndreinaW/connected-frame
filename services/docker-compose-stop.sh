@@ -1,5 +1,8 @@
 #!/bin/sh
 
 echo "Stopping frampeplus docker..."
-docker stop $(docker ps -a -q)
+docker stop app
+docker stop stats
+docker stop dashboard
+docker stop commands
 echo "Frameplus docker stopped!"

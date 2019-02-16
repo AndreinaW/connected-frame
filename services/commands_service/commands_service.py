@@ -175,7 +175,7 @@ class commands_service_handler(BaseHTTPRequestHandler):
                 print("question is not in text" )
             else:
                 print("Found matching for question: " + question)
-                print("The response is: " + listQuestionResponse[question])
+                print("The response is: " + listQuestionResponse[question] + "\n")
                 return listQuestionResponse[question]
 
         print("Matching not found ! ")

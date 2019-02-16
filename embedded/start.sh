@@ -1,5 +1,6 @@
 #!/bin/sh
 
-x-terminal-emulator -e node-red start
-x-terminal-emulator -e python audioManagement.py
-x-terminal-emulator -e python faceDetection.py
+node-red start &
+# bash -c "exec -a faceDec python faceDetection.py &"
+cd audio/
+bash -c "exec -a audioRec python audioRecording.py"

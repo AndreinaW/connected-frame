@@ -29,6 +29,13 @@ cap = cv2.VideoCapture(0)
 cap.set(3,640) # set Width
 cap.set(4,480) # set Height
 
+
+## welcome audio
+#isFirstDetection = False
+#isWelcomePlayed = False
+#welcome_audio = "./audio/resources/welcome.wav"
+
+print("Detecting...")
 while True:
 	ret, img = cap.read()
 	#img = cv2.flip(img, -1)
@@ -50,7 +57,24 @@ while True:
 		cv2.imwrite('images/face.jpg', gray, [int(cv2.IMWRITE_JPEG_QUALITY)])
 		local_data = open('images/face.jpg', 'rb').read()
 		client.publish(topic, payload=local_data, qos=0, retain=False)
+
+
+		# if not isFirstDetection:
+		# 	print("First detection...")
+		# 	isFirstDetection = True
+		# 	isWelcomePlayed = audio.play_audio(welcome_audio)
+		# 	#print("Was audio played: " + isWelcomePlayed)
+		#
+		# # if the face was detected for the first time but for some reason the welcome audio was not played then try to play it again
+		# elif isFirstDetection and not isWelcomePlayed:
+		# 	isWelcomePlayed = audio.play_audio(welcome_audio)
+		#
+
 		time.sleep(3)
+	# else:
+	# 	isFirstDetection = False
+	#	# TODO: peut-etre il manque un compteur pour ne pas remettre a False tout suite quand il n'y a pas de detection en cas de erreur de detection
+
 
 	#cv2.imshow('video',img)
 	k = cv2.waitKey(30) & 0xff

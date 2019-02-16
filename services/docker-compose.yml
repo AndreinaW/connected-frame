@@ -9,9 +9,11 @@ services:
     links:
       - stats
       - dashboard
+      - commands
     depends_on:
       - stats
       - dashboard
+      - commands
     ports:
     - "8080:8080"
     expose:

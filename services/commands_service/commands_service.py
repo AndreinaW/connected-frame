@@ -55,7 +55,7 @@ class commands_service_handler(BaseHTTPRequestHandler):
 
 
 
-        if self.path == '/commands/match':
+        elif self.path == '/commands/match':
             content_length = int(self.headers['Content-Length']) # <--- Gets the size of data
             textToBeMatched = self.rfile.read(content_length).decode("utf-8") # <--- Gets the data itself
 

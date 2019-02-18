@@ -1,5 +1,7 @@
 const toReplace = document.getElementById('face_expression_chart').getContext('2d');
 
+const url_path = 'http://app:8080/api/data/';
+
 const exprDoughnut = new Chart(toReplace, {
     type: 'doughnut',
     data: {
@@ -22,7 +24,7 @@ const exprDoughnut = new Chart(toReplace, {
     options: {}
 });
 
-const url_expr = 'http://localhost:8080/api/data/expressions';
+const url_expr = url_path + 'expressions/';
 
 fetch(url_expr)
     .then((resp) => resp.json())

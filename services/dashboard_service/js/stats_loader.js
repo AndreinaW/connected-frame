@@ -1,4 +1,4 @@
-const url_faces = 'http://localhost:8080/api/data/total_faces';
+const url_faces = url_path + 'total_faces/';
 
 fetch(url_faces)
     .then((resp) => resp.json())
@@ -10,7 +10,7 @@ fetch(url_faces)
     });
 
 
-const url_age = 'http://localhost:8080/api/data/avg_age';
+const url_age = url_path + 'avg_age/';
 
 fetch(url_age)
     .then((resp) => resp.json())

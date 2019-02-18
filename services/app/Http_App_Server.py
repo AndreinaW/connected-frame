@@ -5,7 +5,7 @@ from urllib.request import Request, urlopen
 
 mime_json = 'application/json'
 
-url_stats = 'http://localhost:8081'
+url_stats = 'http://stats:8081'
 
 # Class representing our app server
 class Http_App_Server(BaseHTTPRequestHandler):

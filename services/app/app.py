@@ -49,12 +49,12 @@ raspi_mqtt_broker_port = 1883
 topics = ['sensors/camera', 'sensors/light', 'audio/register']
 
 # Services constants
-url_stats = 'http://localhost:8081'
+url_stats = 'http://stats:8081'
 url_stats_post_extension = '/compute_stats'
 raspberry_pi_url = ''
 raspberry_pi_url_extension = '/audioResponse'
 
-url_match_commands = 'http://localhost:8083/commands/match'
+url_match_commands = 'http://commands:8083/commands/match'
 audio_created = './recordings/text_to_speech.wav'
 repeat_question = './resources/repeatQuestion.wav'
 url_node_red = 'http://192.168.43.108:1880/play_sound'
@@ -123,10 +123,11 @@ def face_api(data):
     with open(filename, 'a+') as file:
         file.write(data + '\n')
 
-    # Send data through statistics then dashboard services
-    send_basic_post_request(url_stats, data)
+    # Send data through statistics
+    send_basic_post_request(url_stats + url_stats_post_extension, data)
 
 def send_alarm():
+    print('bonjour')
     SSL_PORT = 465
     SMTP_GMAIL_SERVER = 'smtp.gmail.com'
 
@@ -148,6 +149,7 @@ def send_alarm():
 
 
 def on_message_received(client, userdata, message):
+    print('bonjour')
     if message.topic == topics[0]:
         print('Photo published on ' + message.topic)
         face_api(message.payload)
